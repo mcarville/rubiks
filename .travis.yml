@@ -7,5 +7,6 @@ deploy:
   github-token: $GITHUB_TOKEN
   keep-history: true
   file: target/*
+  file_glob: true
   on:
     branch: master
