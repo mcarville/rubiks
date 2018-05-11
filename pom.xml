@@ -95,12 +95,12 @@
 							<target name="Build_GUI_dependencies">
 								<echo>Going to run command => npm install</echo>
 								<exec executable="cmd" dir="${gui.angular.js.target.dir}"
-									failonerror="true">
+									failonerror="false">
 									<arg line="/c npm install" />
 								</exec>
 								<echo>Going to run command => grunt release</echo>
 								<exec executable="cmd" dir="${gui.angular.js.target.dir}"
-									failonerror="true">
+									failonerror="false">
 									<arg line="/c grunt" />
 								</exec>
 							</target>
