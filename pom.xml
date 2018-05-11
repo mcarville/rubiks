@@ -7,7 +7,7 @@
 	<artifactId>rubiks-app</artifactId>
 	<name>Rubiks</name>
 	<packaging>war</packaging>
-	<description></description>
+	<description>A Java webapp to play rubiks</description>
 	<groupId>com.rubiks</groupId>
 	<version>IF.2016.3-SNAPSHOT</version>
 
