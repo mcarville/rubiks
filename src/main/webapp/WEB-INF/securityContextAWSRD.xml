@@ -1,0 +1,60 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+
+	<!-- password encoder used by the file based (see below) user-service -->
+	<beans:bean id="encoder"
+		class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
+
+	<ldap-server id="contextSource"
+		url="ldap://awsrdcmx.com:389/DC=awsrdcmx,DC=com" manager-dn="ldapreader@awsrdcmx.com"
+		manager-password="uTaTRD1R" />
+
+	<beans:bean id="ldapUserDetailsService"
+		class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
+		<beans:constructor-arg ref="ldapUserSearch" />
+		<beans:constructor-arg ref="ldapAuthoritiesPopulator" />
+		<!-- beans:property name="userDetailsMapper" ref="authHelper" / -->
+	</beans:bean>
+
+
+	<beans:bean id="ldapUserSearch"
+		class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<beans:constructor-arg type="String" value="CN=Users" />
+		<beans:constructor-arg type="String" value="sAMAccountName={0}" />
+		<beans:constructor-arg ref="contextSource" />
+	</beans:bean>
+
+	<beans:bean id="ldapAuthoritiesPopulator"
+		class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+		<beans:constructor-arg ref="contextSource" />
+		<beans:constructor-arg value="cn=users" />
+		<beans:property name="groupSearchFilter" value="member={0}" />
+		<beans:property name="searchSubtree" value="true" />
+		<beans:property name="rolePrefix" value="ROLE_" />
+		<beans:property name="convertToUpperCase" value="true" />
+	</beans:bean>
+
+	<authentication-manager alias="authManager">
+
+		<ldap-authentication-provider
+			group-search-filter="member={0}" group-search-base="CN=Users"
+			user-search-base="CN=Users" user-search-filter="sAMAccountName={0}" />
+
+		<authentication-provider>
+			<password-encoder ref="encoder" />
+			<user-service>
+				<user name="admin"
+					password="023af7876513a70799f64afbe18e5f82dd85ea314df459fa34cd233321b4f31c70eb069f69df75ce"
+					authorities="admin" />
+				<user name="apiUser2"
+					password="b391a5da5bc02dffd5844f972a4b24a180f977622ce24ad31b5f9caae9b69ce17bb735ae02a09276"
+					authorities="admin" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+
+
+
+</beans:beans> 

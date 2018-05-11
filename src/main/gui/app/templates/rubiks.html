@@ -1,0 +1,130 @@
+
+<div style="text-align: center; font-size: 18px;">
+	Rubik's
+</div>
+<div class="dashboard overauto" ng-init="initialize()">
+	<div class="left" >
+		<div style="padding-left: 180px">
+			<div style="padding: 5px">
+				<div style="overflow: auto;">
+					<div class="rubiksMenu rubiksHorizontalMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_north_south', 'left', 'clockwise')" ><img src="images/arrow-down_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu rubiksHorizontalMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_north_south', 'center', 'clockwise')" ><img src="images/arrow-down_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu rubiksHorizontalMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_north_south', 'right', 'clockwise')" ><img src="images/arrow-down_30_30.png" /></div>
+					</div>
+				</div>
+			</div>
+			<rubiksface facedata="rubiksFaces.north"></rubiksface>
+		</div>
+		<div style="overflow: auto;">
+			<div style="float: left">
+				<div style="padding: 5px">
+					<div class="rubiksMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_east_west', 'left', 'clockwise')" ><img src="images/arrow-right_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_east_west', 'center', 'clockwise')" ><img src="images/arrow-right_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_east_west', 'right', 'clockwise')" ><img src="images/arrow-right_30_30.png" /></div>
+					</div>
+				</div>
+			</div>
+			<div style="float: left">
+				<div style="overflow: auto;">
+					<div style="float: left; overflow: auto;" ><rubiksface facedata="rubiksFaces.east"></rubiksface></div> 
+					<div style="float: left; overflow: auto;" ><rubiksface facedata="rubiksFaces.front"></rubiksface></div> 
+					<div style="float: left; overflow: auto;" ><rubiksface facedata="rubiksFaces.west"></rubiksface></div>
+				</div>
+			</div>
+			<div style="float: left">
+				<div style="padding: 5px">
+					<div class="rubiksMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_east_west', 'left', 'reverse clockwise')" ><img src="images/arrow-left_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_east_west', 'center', 'reverse clockwise')" ><img src="images/arrow-left_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_east_west', 'right', 'reverse clockwise')" ><img src="images/arrow-left_30_30.png" /></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div  style="padding-left: 180px">
+			<rubiksface facedata="rubiksFaces.south"></rubiksface>
+			<div style="padding: 5px">
+				<div style="overflow: auto;">
+					<div class="rubiksMenu rubiksHorizontalMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_north_south', 'left', 'reverse clockwise')" ><img src="images/arrow-up_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu rubiksHorizontalMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_north_south', 'center', 'reverse clockwise')" ><img src="images/arrow-up_30_30.png" /></div>
+					</div>
+					<div class="rubiksMenu rubiksHorizontalMenu">
+						<div class="rubiksSquare" ng-click="moveCube('vertical_north_south', 'right', 'reverse clockwise')" ><img src="images/arrow-up_30_30.png" /></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="padding-left: 180px" ><rubiksface facedata="rubiksFaces.back"></rubiksface></div>
+	</div>
+	<div class="left" style="padding: 0 20px;">
+		<div class="overauto" >
+			<div class="left" style="padding: 5px">
+				<div class="rubiksMenu">
+					<div class="rubiksSquare" ng-click="moveCube('horizontal', 'top', 'clockwise')" ><img src="images/arrow-rotate-clockwise_30_30.png" /></div>
+				</div>
+				<div class="rubiksMenu">
+					<div class="rubiksSquare" ng-click="moveCube('horizontal', 'middle', 'clockwise')" ><img src="images/arrow-rotate-clockwise_30_30.png" /></div>
+				</div>
+				<div class="rubiksMenu">
+					<div class="rubiksSquare" ng-click="moveCube('horizontal', 'bottom', 'clockwise')" ><img src="images/arrow-rotate-clockwise_30_30.png" /></div>
+				</div>
+			</div>
+			<div class="left" style="padding: 5px">
+				<div class="rubiksMenu">
+					<div class="rubiksSquare" ng-click="moveCube('horizontal', 'top', 'reverse clockwise')" ><img src="images/arrow-rotate-anticlockwise_30_30.png" /></div>
+				</div>
+				<div class="rubiksMenu">
+					<div class="rubiksSquare" ng-click="moveCube('horizontal', 'middle', 'reverse clockwise')" ><img src="images/arrow-rotate-anticlockwise_30_30.png" /></div>
+				</div>
+				<div class="rubiksMenu">
+					<div class="rubiksSquare" ng-click="moveCube('horizontal', 'bottom', 'reverse clockwise')" ><img src="images/arrow-rotate-anticlockwise_30_30.png" /></div>
+				</div>
+			</div>
+		</div>
+		<div style="line-height: 30px">
+			<div><b>Game</b></div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('mixCube');" >Mix Cube</div>
+			<div><b>First Floor</b></div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('frontCrossSideReverse');" >Front Cross Side Reverse</div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('sexyMoveLeft');" >Sexy Move Left</div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('sexyMoveRight');" >Sexy Move Right</div>
+			<div><b>Second Floor</b></div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('belgiumMoveLeft');" >Belgium Move Left</div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('belgiumMoveRight');" >Belgium Move Right</div>
+			<div><b>Third Floor</b></div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('backCrossBuilding');" >Back Cross Building</div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('backCrossOrienting');" >Back Cross Orienting</div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('elevatorMove');" >Elevator Move</div>
+			<div style="cursor:pointer;" ng-click="moveCubeMagicMove('doubleChairMove');" >Double Chair Move</div>
+		</div>
+	</div>
+	<div class="left">
+		<div style="height: 48px;text-align: center;line-height: 48px;"><b>Back view</b></div>
+		<div style="padding-left: 132px"><rubiksface facedata="rubiksFaces.south"></rubiksface></div>
+		<div style="overflow: auto;">
+			<div style="float: left; overflow: auto;" ><rubiksface facedata="rubiksFaces.east_reverse"></div>
+			<div style="float: left; overflow: auto;" ><rubiksface facedata="rubiksFaces.back"></rubiksface></div>
+			<div style="float: left; overflow: auto;" ><rubiksface facedata="rubiksFaces.west_reverse"></div>
+		</div>
+		<div style="padding-left: 132px"><rubiksface facedata="rubiksFaces.north"></rubiksface></div>
+		
+	</div>
+	
+</div>

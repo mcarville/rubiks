@@ -1,0 +1,109 @@
+
+body{
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	font-size: 14px !important;
+	overflow-y: scroll;
+}
+
+img {
+    border: 0 none;
+    height: auto;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+form {
+	height: auto;
+	padding: 0;
+	margin: 0;
+	line-height: 0;
+}
+
+.dashboard .overauto {
+	overflow: auto;
+}
+
+.overhidden {
+	overflow: hidden;
+}
+
+.dashboard .left {
+	float: left;
+}
+
+.dashboard .right {
+	float: right;
+}
+
+.dashboard .width5 {
+	width: 5%;
+}
+
+.dashboard .width10 {
+	width: 10%;
+}
+
+.dashboard .width15 {
+	width: 15%;
+}
+
+.dashboard .width25 {
+	width: 25%;
+}
+
+.dashboard .width20 {
+	width: 20%;
+}
+
+.dashboard .width30 {
+	width: 30%;
+}
+
+.dashboard .width33 {
+	width: 33%;
+}
+
+.dashboard .width40 {
+	width: 40%;
+}
+
+.dashboard .width50 {
+	width: 50%;
+}
+
+.dashboard .width60 {
+	width: 60%;
+}
+
+.dashboard .width70 {
+	width: 70%;
+}
+
+.dashboard .width80 {
+	width: 80%;
+}
+
+.dashboard .width85 {
+	width: 85%;
+}
+
+.dashboard .width90 {
+	width: 90%;
+}
+
+.dashboard .width100 {
+	width: 100%;
+}
+
+.dashboard .center {
+	text-align: center;
+}
+
+.dashboard .nocenter {
+	text-align: left;
+}
+
+.dashboard .pointer {
+	cursor: pointer;
+}

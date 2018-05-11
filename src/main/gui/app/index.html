@@ -1,0 +1,26 @@
+<!doctype html>
+<html ng-app="search" >
+	<head>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width" />
+
+		<script src="js/back-end-gui.min.js"></script>
+
+		<link type="image/vnd.microsoft.icon" rel="shortcut icon" href="favicon.ico">
+		<link type="text/css" rel="stylesheet" href="css/back-end-gui.min.css"/>
+		<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"/>
+
+		
+		<title ng-bind="context.title"></title>
+		
+	</head>
+	<body>
+
+		<div>
+			<ng-view></ng-view>
+		</div>
+
+	</body>
+</html>

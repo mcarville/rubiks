@@ -1,0 +1,90 @@
+.masterdb .dashboardColumn {
+	width: 33%;
+}
+
+.masterdb .header .title {
+	color: #fff;
+	line-height: 90px;
+	vertical-align: middle;
+	text-align: center;
+	padding: 0;
+	font-size: 26px;
+	text-transform: uppercase; 
+	font-weight: bold;
+}
+
+.masterdb .sectionTitle {
+	background-color: #5a5a5a;
+	color: #fff;
+}
+
+.masterdb .key {
+	background-color: #fff;
+	text-align: center;
+	border-right: solid 4px #EEEEEE;
+	border-bottom: solid 4px #EEEEEE;
+}
+
+.masterdb .key .value {
+	line-height: 36px;
+}
+
+.masterdb .datablock .label {
+	font-style: italic;
+}
+
+.masterdb .fromPIP {
+	line-height: 44px;
+	font-style: normal;
+}
+
+.masterdb .address {
+	font-style: normal;
+}
+
+.masterdb .subsidiary {
+	background-color: #fff;
+	border: 1px solid #000;
+	margin: 4px;
+	padding: 4px;
+}
+
+.masterdb .type_value_item {
+	line-height: 30px;
+}
+
+.dashboardDetailsContent table, th, td{
+	border: 1px solid black;
+}
+.contacts{
+	overflow-y: scroll;
+	max-height: 300px;
+}
+
+.contact {
+	line-height: 22px;
+}
+
+.contact .fullname{
+	font-weight: bold;
+}
+
+.shareholder {
+	line-height: 38px;
+}
+
+.revenues {
+
+}
+
+.revenues .columnheader {
+	font-weight: bold;
+}
+
+.revenues .tableline {
+	padding: 5px;
+}
+
+.revenues .revenue {
+	text-align: right;
+}

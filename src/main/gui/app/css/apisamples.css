@@ -1,0 +1,19 @@
+.apisamples {
+
+}
+
+.apisamples input[type=text] {
+	width: 90%;
+}
+
+.param {
+	line-height:40px;
+}
+
+.paramName  {
+	font-weight: bold;
+}
+
+.paramValue {
+
+}

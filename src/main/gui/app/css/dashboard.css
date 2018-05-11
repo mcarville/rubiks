@@ -1,0 +1,564 @@
+
+
+.bodywidgetKpi
+{
+	background-color:#EBEBEB;
+	overflow-y:scroll;
+	/*font-family: Arial,Helvetica,sans-serif !important;*/
+	font-size: 12px;
+}
+
+.PrimaryColomn
+{
+	width: 33%;
+	float: left;
+}
+
+.dashBoardColomnPerson
+{
+	width: 100%;
+}
+
+.dashboard
+{
+	background-color:#C3C3C3;
+	overflow: auto;
+}
+
+.dashboardColumn
+{
+	width: 25%;
+	float: left;
+	background-color:#393939;
+}
+
+.dashboardColumn34
+{
+	width:34%;
+}
+
+/* Common */
+
+.dashboard .itemName
+{
+	background-color:rgba(255,255,255,0.25);
+	color: #FFF;
+	font-weight: bold;
+	padding: 2px 5px 2px 5px;
+}
+
+.dashboard .header
+{
+	/*color: #FFF;
+	font-size: 14px;
+	font-weight:bold;
+	padding: 4px;*/
+	overflow: auto;
+	font-size: 24px;
+	line-height: 30px;
+	background-color:#313131;
+	color:#FFF;
+	width:99.8%;
+	margin-bottom: 5px;
+}
+
+.dashboard .header .logo
+{
+	float: left;
+	padding: 0 20px;
+	line-height:90px;
+}
+
+.dashboard .header .rightImage
+{
+	max-height: 94px;
+}
+
+
+.dashboard .header .contactDetails
+{
+	float: left;
+	padding: 0;
+	line-height:29px;
+}
+
+.state .header .contactDetails
+{
+	width: 22%;
+	line-height:45px;
+}
+
+.contactName
+{
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.dashboard .header  .contactName
+{
+	padding-left: 5px;
+}
+
+.dashboard .header .kpiZone
+{
+	float: left;
+    width: 20%;
+	text-align:center;
+}
+
+.contact .header .kpiZone
+{
+	width: 18%;
+}
+
+.dashboard .header .kpiTitle
+{
+	font-size: 14px;
+	font-weight: 400;
+}
+
+.dashboard .header .kpiValue
+{
+	line-height:60px;
+}
+
+.dashboard .header .image
+{
+	float: left; 
+	width:110px;
+}
+
+.dashboard  .header .reduceImage
+{
+	cursor:pointer;
+	float:right;
+	padding-top: 2px;
+}
+
+.dashboard .header .viewDetailsLink
+{
+	color: #FFF;
+	cursor: pointer;
+	float:right;
+	padding-right:5px;
+}
+
+/* END Common */
+
+/* Header */
+.dashboardHeader
+{
+	background-color:#222D35;
+	color:#FFF;
+	width:100%;
+	border-radius: 5px;
+}
+
+.dashboardHeader .kpiCharts
+{
+	overflow:hidden;
+	padding-left: 10px;
+	width:90%;
+}
+
+.dashboardHeader .kpiChart
+{
+    height: 70px;
+	padding-left: 48px;
+}
+
+.dashboardHeader .kpiInfo
+{
+	font-size: 16px;
+	height: 60px;
+	line-height: 60px;
+	vertical-align: middle;
+	text-transform:capitalize;
+	width: 170px;
+	overflow: hidden;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.dashboardHeader .accountKpiZone .kpiTitle
+{
+	padding-bottom:10px;
+}
+
+.dashboardHeader .accountName
+{
+	font-weight: bold;
+	padding:4px;
+}
+/* End Header */
+
+/* Widgets */
+.dashboard .dashboardWidget
+{
+	border-radius: 5px;
+	background-color:#22383C;
+	margin: 4px;
+	margin-bottom: 8px;
+    padding: 0px;
+}
+
+.dashboard  .dashboardDetailsContent 
+{
+	padding: 0 20px 5px 20px;
+}
+
+.dashboard .dashboardWidget .dashboardDetailsContent
+{
+	/*background-color:#FFF;*/
+}
+
+.dashboard .dashboardWidget .content
+{
+	background-color: #FFF;
+}
+
+.dashboard .dashboardWidget .dashboardScrollable
+{
+	overflow:auto;
+	height: 250px;
+	background-color: #FFF;
+}
+
+.dashboard .dashboardWidget .dashboardListItem
+{
+	/*border-bottom:1px solid #222D35;*/
+	min-height:65px;
+	padding:0 4px 0px 4px;
+}
+/* END Widgets */
+
+.bar.text {
+	font-size: 10px;
+}
+
+.bar.rect
+{
+	fill: #2775EC;
+}
+
+.dashboard .charTitle{
+	/*font-weight:lighter;
+	font-size:18px;
+	color:#FFF;
+	text-transform: uppercase;
+	padding-bottom: 15px;*/
+
+	font-weight: lighter;
+	font-size: 14px;
+	color: #263038;
+	text-transform: uppercase;
+	padding:10px 20px 15px 35px;
+}
+
+.dashboard .charKey{
+	font-size:11px;
+	color: #606060;
+	/*color:#A7ABAE;
+	width:50%;
+	float:left;
+	padding-bottom: 15px;*/
+}
+
+.dashboard .charValue{
+	font-size:12px;
+	color:#263038;
+	/*color:#00A49B;
+	float:left;
+	width:50%;
+	padding-bottom: 15px;*/
+}
+
+.actionAlert
+{
+	/*height: 40px;*/
+	overflow: auto;
+	font-weight: normal;
+}
+
+.actionAlert .logo
+{
+	float:left;
+	width: 10%;
+	line-height: 40px;
+	text-align: center;
+}
+
+
+.actionAlert .logoRight
+{
+	float:left;
+	width: 15%;
+	line-height: 40px;
+	text-align: center;
+}
+
+.actionAlert .logoRight .imgContainer
+{
+	padding: 0 5px;
+}
+
+
+.actionAlert .line
+{
+	float:left;
+	width: 75%;
+}
+
+.actionAlert .line .aaTitle
+{
+	font-weight: bold;
+}
+
+/* Pager */ 
+
+.dashboard .title .searchPager {
+	font-size: 14px;
+	text-transform: none;
+}
+
+.searchPager
+{
+	width:100%;
+	text-align: right;
+}
+
+.searchPager .pagerItem
+{
+	cursor: pointer;
+	color: #08c;
+}
+
+.searchPager .inactive
+{
+	cursor: auto;
+	color: grey;
+}
+
+.dashboard  .title
+{
+	font-weight: lighter;
+	font-size: 18px;
+	color: #263038;
+	text-transform: uppercase;
+	padding:20px 20px 20px 20px;
+	height: 28px; 
+	line-height: 28px;
+}
+
+.dashboard .item{
+	background-color: #FFF;
+	border-bottom: solid 4px #EEEEEE;
+	border-right: solid 4px #EEEEEE;
+}
+
+.actionAlertsTotal {
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.topNavigationMenu {
+	text-align: center;
+	padding: 0 0 10px 10px;
+}
+
+.navigationLetters {
+	overflow: auto;
+}
+
+.navigationLetter {
+	float:left;
+	width:3.5%;
+	text-align: center;
+	cursor: pointer;
+}
+
+.navigationLetters .selected {
+	background-color: #ccc;
+    color: #313131;
+    font-weight: 700;
+}
+
+.facetValues {
+
+}
+
+.facetValues .facetValue {
+	cursor: pointer;
+	padding: 4px 10px 4px 0;
+}
+
+.facetValues .selected {
+	font-weight: bold; 
+	background-color: #ccc;
+}
+
+.removable {
+	cursor: pointer;
+	background-image: url("../images/close_16_16.png");
+    background-position: 99% 50%;
+    background-repeat: no-repeat;
+}
+
+.dashboard .workflows {
+	
+}
+
+.dashboard .workflow {
+	line-height: 24px;
+	border-bottom: 1px solid #ccc;
+}
+
+.dashboard .workflowLast {
+	border-bottom: none;
+}
+
+.relatedUrl {
+	padding: 5px;
+}
+
+.relatedUrl .borderedDiv {
+	overflow: auto;
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+
+.relatedUrl .headline {
+	font-weight: bold;
+}
+
+.relatedUrl .fields {
+	border-top: none;
+}
+
+.relatedUrl .field {
+	float: left;
+	width:33%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tabMenus {
+	line-height: 40px;
+	margin-bottom: 5px;
+}
+
+.tabMenu {
+	background-color: #fff;
+}
+
+.tabMenu  .title {
+	color: #000;
+}
+
+.tabMenu .selected {
+	background-color: #313131;
+}
+
+.tabMenu .selected  .title{
+	color: #fff;
+}
+
+.notAccessible .message {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.dashboard .loadingPopup .loadingImage {
+	background-position:center; 
+	height: 205px;
+	background-image: url("../images/preloader_transparent.gif");
+    background-repeat: no-repeat;
+}		
+
+.databaseInfo {
+	font-size: 24px;
+	line-height: 38px;
+}
+
+.databaseInfo .sectionContainer {
+	padding: 5px;
+}
+
+.databaseInfo .section {
+	padding: 5px;
+	border: 2px none;
+    border-radius: 5px;
+	background-color: #5a5a5a;
+}
+
+.databaseInfo .dbStats {
+	background-color: #C94900;
+}
+
+.databaseInfo .section .sectionTitle {
+	padding: 0 5px;
+	color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.databaseInfo .infoContainer{
+	padding: 2%;
+}
+
+.databaseInfo .info {
+	padding: 5px;
+	border: 2px none;
+    border-radius: 5px;
+	background-color: #fff;
+	text-align: center;
+}
+
+.databaseInfo .info .infoLogo {
+	padding-bottom: 4px;
+}
+
+.databaseInfo .info .name {
+	text-transform: capitalize;
+}
+
+.databaseInfo .info .value {
+	
+}
+
+.databaseInfo .searchByUrl {
+	color :#fff;
+	font-size: 15px;
+	padding-left: 5px;
+}
+
+.databaseInfo .searchByUrl .urlInput {
+	width: 30%;
+	border-radius: 5px;
+    padding: 5px;
+}
+
+.databaseInfo .submitInput {
+	cursor: pointer;
+    margin: 8px 2px;
+    padding: 0;
+}
+
+.rubiksSquare {
+	width: 30px; 
+	height: 30px;
+}
+
+.rubiksMenu {
+	padding: 5px;
+	cursor: pointer;
+}
+
+.rubiksHorizontalMenu {
+	float: left; 
+}
+

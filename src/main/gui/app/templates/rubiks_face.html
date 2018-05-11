@@ -1,0 +1,9 @@
+<div style="padding: 5px">
+	<div ng-repeat="faceline in facedata" style="overflow: auto;">
+		<div ng-repeat="facesquare in faceline track by $index" style="float: left; padding: 5px"> <!--  -->
+			<div class="rubiksSquare" style="background-color: {{facesquare}}" >
+
+			</div>
+		</div>
+	</div>
+</div>
