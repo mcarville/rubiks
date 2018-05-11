@@ -35,7 +35,6 @@
 	<build>
 		<finalName>rubiks-app</finalName>
 		<plugins>
-			<!--
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -48,7 +47,6 @@
 					</webResources>
 				</configuration>
 			</plugin>
-			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -85,36 +83,37 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.5</version>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>exec-gen-sources</id>
+						<id>exec-npm-install</id>
 						<phase>prepare-package</phase>
 						<configuration>
-							<target name="Build_GUI_dependencies">
-								<echo>Going to run command => npm install</echo>
-								<exec executable="cmd" dir="${gui.angular.js.target.dir}"
-									failonerror="false">
-									<arg line="/c npm install" />
-								</exec>
-								<echo>Going to run command => grunt release</echo>
-								<exec executable="cmd" dir="${gui.angular.js.target.dir}"
-									failonerror="false">
-									<arg line="/c grunt" />
-								</exec>
-							</target>
+							<workingDirectory>${gui.angular.js.target.dir}</workingDirectory>
+							<executable>npm</executable>
+							<arguments>
+								<argument>install</argument>
+							</arguments>
 						</configuration>
 						<goals>
-							<goal>run</goal>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>exec-grunt</id>
+						<phase>prepare-package</phase>
+						<configuration>
+							<workingDirectory>${gui.angular.js.target.dir}</workingDirectory>
+							<executable>grunt</executable>
+						</configuration>
+						<goals>
+							<goal>exec</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			-->
 		</plugins>
 	</build>
 	<dependencies>
