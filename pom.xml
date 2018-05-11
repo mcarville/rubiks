@@ -35,6 +35,7 @@
 	<build>
 		<finalName>rubiks-app</finalName>
 		<plugins>
+			<!--
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -47,6 +48,7 @@
 					</webResources>
 				</configuration>
 			</plugin>
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
