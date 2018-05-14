@@ -22,6 +22,21 @@ app.directive('hideonerror', function () {
    return hideonerror;
 });
 
+app.directive("rubkisspace", ["$q", "$http", function($q, $http) {
+	return {
+		restrict: 'E',
+		templateUrl: 'templates/rubkis_space.html',
+		scope: {
+			zone: '=',
+		},
+		link: function (scope, element, attrs) {
+			scope.menuSpaces = function () {
+				return ('right' == scope.zone) ? [1,2,3] : [1,2,3,4];
+			};
+		}
+	}
+}])
+
 app.directive("rubiksface", ["$q", "$http", function($q, $http) {
 	return {
 		restrict: 'E',
@@ -30,7 +45,22 @@ app.directive("rubiksface", ["$q", "$http", function($q, $http) {
 			facedata: '=',
 		},
 		link: function (scope, element, attrs) {
-			
+			scope.retrieveColorCode = function(color) {
+				switch (color) {
+					case 'blue':
+						return '#82B1FF';
+					case 'white':
+						return '#fff';
+					case 'red':
+						return '#F4511E';
+					case 'orange':
+						return '#F7923A';
+					case 'green':
+						return '#8BC34A';
+					case 'yellow':
+						return '#FFEE58';
+				}
+			};
 		}
 	}
 }])

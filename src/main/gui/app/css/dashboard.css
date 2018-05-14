@@ -21,7 +21,7 @@
 
 .dashboard
 {
-	background-color:#C3C3C3;
+	background-color:#ddd;
 	overflow: auto;
 }
 
@@ -548,13 +548,24 @@
     padding: 0;
 }
 
+.rubiksSquareContainer {
+	padding: 2px;
+}
+
 .rubiksSquare {
-	width: 30px; 
-	height: 30px;
+	width: 35px; 
+	height: 35px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.rubiksColored {
+	border-radius: 5px;
+	border:5px solid #616161;
 }
 
 .rubiksMenu {
-	padding: 5px;
+	padding: 7px; /* must be equal to rubiksColored's border + rubiksSquareContainer's padding */
 	cursor: pointer;
 }
 
