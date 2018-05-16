@@ -13,3 +13,8 @@ deploy:
   on:
     branch: master
 after_success: docker build -t mcarville/rubiks .
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
