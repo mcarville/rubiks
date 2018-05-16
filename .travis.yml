@@ -13,8 +13,6 @@ deploy:
   on:
     branch: master
 	
-services:
-  - docker
+services: docker
   
-before_install:
-  - docker build -t mcarville/rubiks .
+before_install: docker build -t mcarville/rubiks .
