@@ -16,7 +16,7 @@ RUN cd /opt/ && wget http://apache.crihan.fr/dist/tomcat/tomcat-8/v8.5.31/bin/ap
 
 RUN java -version
 
-# COPY ./rubiks-app*.war /opt/tomcat8/webapps/
+COPY target/rubiks-app.war /opt/tomcat8/webapps/
 
 CMD ["/opt/tomcat8/bin/catalina.sh", "run", "-d"]
 
