@@ -12,7 +12,7 @@ deploy:
   file_glob: true
   on:
     branch: master
-after_success: docker build -t mcarville/rubiks .
+after_success: docker build -t mcarville/rubiks2 .
 deploy:
   provider: script
   script: bash docker_push
