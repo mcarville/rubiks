@@ -1,7 +1,7 @@
 sudo: required
 services: docker
 language: java
-before_install: export GIT_COMMIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && echo $GIT_COMMIT_BRANCH && export GIT_COMMIT_ID=$(git rev-parse --short HEAD) && echo $GIT_COMMIT_ID && export DOCKET_TAG_NAME="rubiks."$GIT_COMMIT_BRANCH"."$GIT_COMMIT_ID && echo $DOCKET_TAG_NAME
+before_install: export GIT_COMMIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && echo $GIT_COMMIT_BRANCH && export GIT_COMMIT_ID=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p') && echo $GIT_COMMIT_ID && export DOCKET_TAG_NAME="rubiks."$GIT_COMMIT_BRANCH"."$GIT_COMMIT_ID && echo $DOCKET_TAG_NAME
 script: mvn install
 deploy:
   provider: releases
