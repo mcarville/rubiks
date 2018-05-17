@@ -1,7 +1,7 @@
 sudo: required
 services: docker
 language: java
-before_install: export GIT_COMMIT_ID=$(git rev-parse --short HEAD) && echo $GIT_COMMIT_ID
+before_install: export GIT_COMMIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && echo $GIT_COMMIT_BRANCH && export GIT_COMMIT_ID=$(git rev-parse --short HEAD) && echo $GIT_COMMIT_ID && export DOCKET_TAG_NAME="rubiks."$GIT_COMMIT_BRANCH"."$GIT_COMMIT_ID && echo $DOCKET_TAG_NAME
 script: mvn install
 deploy:
   provider: releases
@@ -13,7 +13,7 @@ deploy:
   file_glob: true
   on:
     branch: master
-after_success: docker build -t mcarville/sandbox:rubiks_$GIT_COMMIT_ID .
+after_success: docker build -t mcarville/sandbox:$DOCKET_TAG_NAME .
 deploy:
   provider: script
   script: bash docker_push
