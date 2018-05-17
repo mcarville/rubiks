@@ -1,10 +1,12 @@
-<div class="dashboard">
+<div class="dashboard" ng-init="initialize()">
 	<div class="overauto" style="font-size: 24px; height: 85px; line-height: 85px;">
 		<div class="left width10 center"><img src="images/rubik_cube_80_80.png" /></div>
-		<div class="left width90" style="vertical-align: middle; font-weight: bold;">Rubik's</div>
+		<div class="left width90" style="vertical-align: middle; font-weight: bold;">Rubik's
+			{{rubiksAnalysis}}
+		</div>
 	</div>
 	<div style="background-color: #fff; height: 10px"></div>
-	<div class="overauto" ng-init="initialize()">
+	<div class="overauto" >
 		<div class="left width40" >
 			<div>
 				<div class="overauto">
@@ -114,8 +116,12 @@
 			<div style="line-height: 30px; font-size: 16px;">
 				<div><b>Game</b></div>
 				<div style="cursor:pointer;" ng-click="moveCubeMagicMove('mixCube');" >Mix Cube</div>
-				<div><b>First Floor</b></div>
-				<div style="cursor:pointer;" ng-click="moveCubeMagicMove('frontCrossSideReverse');" >Front Cross Side Reverse</div>
+				<div><b>First Floor</b> 
+					<img src="images/validated_20_20.png" ng-if="rubiksAnalysis.is_first_floor_done" />
+				</div>
+				<div style="cursor:pointer;" ng-click="moveCubeMagicMove('frontCrossSideReverse');" >Front Cross Side Reverse
+					<img src="images/validated_20_20.png" ng-if="rubiksAnalysis.is_front_cross_done" />
+				</div>
 				<div style="cursor:pointer;" ng-click="moveCubeMagicMove('sexyMoveLeft');" >Sexy Move Left</div>
 				<div style="cursor:pointer;" ng-click="moveCubeMagicMove('sexyMoveRight');" >Sexy Move Right</div>
 				<div><b>Second Floor</b></div>

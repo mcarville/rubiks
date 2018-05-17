@@ -1,6 +1,7 @@
 package com.rubiks.objects;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -199,5 +200,61 @@ public class Cube {
 		}
 		
 		return jsonArray;
+		
+		
 	}
+
+	public JSONObject toCubeAnalysisJSON() throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+		
+		jsonObject.put("is_front_cross_done", isFrontCrossDone());
+
+		jsonObject.put("is_first_floor_done", isFirstFloorDone());
+		
+		return jsonObject;
+	}
+	
+	public boolean isFrontCrossDone() {
+		String color = null;
+		int[] CROSS_INDEXES = {1, 3, 4, 5, 7};
+		for(int i : CROSS_INDEXES) {
+			Square square = squares.get(i);
+			SquareFace squareFace =	square.retrieveSquareFaceByOrientation("front");
+			if(color == null)
+				color = squareFace.getColor();
+			if(color != null && ! color.equals(squareFace.getColor()))
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean isFirstFloorDone() {
+		String color = null;
+		for(int i = 0 ; i < squares.size() && i < 9 ; i++) {
+			Square square = squares.get(i);
+			SquareFace squareFace =	square.retrieveSquareFaceByOrientation("front");
+			if(color == null)
+				color = squareFace.getColor();
+			if(color != null && ! color.equals(squareFace.getColor()))
+				return false;
+		}
+		return true;
+	}
+	
+//	public boolean isSecondFloorDone() {
+//		if(! isFirstFloorDone())
+//			return false;
+//		
+//		
+//	}
+	
+//	public boolean isBackCross() {
+//
+//	}
+//	
+//	public boolean isCubeDone() {
+//
+//	}
+
+
 }

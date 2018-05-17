@@ -100,6 +100,7 @@ angular.module('rubiks_module', [])
 					function(data) {
 						
 						$scope.rubiksFaces = data.cube_faces;
+						$scope.rubiksAnalysis = data.cube_analysis;
 					}
 				);
 		}
@@ -111,6 +112,7 @@ angular.module('rubiks_module', [])
 					function(data) {
 						
 						$scope.rubiksFaces = data.cube_faces;
+						$scope.rubiksAnalysis = data.cube_analysis;
 					}
 				);
 		};
@@ -122,6 +124,7 @@ angular.module('rubiks_module', [])
 					function(data) {
 						
 						$scope.rubiksFaces = data.cube_faces;
+						$scope.rubiksAnalysis = data.cube_analysis;
 					}
 				);
 		};

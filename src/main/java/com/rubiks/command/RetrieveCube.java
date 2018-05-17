@@ -59,6 +59,7 @@ public class RetrieveCube extends AbstractCommand {
 			cube.move(axe, level, direction);
 		
 		jsonResponse.put("cube_faces", cube.toCubeFacesJSON());
+		jsonResponse.put("cube_analysis", cube.toCubeAnalysisJSON());
 		
 		return jsonResponse;
 		
@@ -73,7 +74,13 @@ public class RetrieveCube extends AbstractCommand {
 		
 		System.out.println(cube.toCubeFacesJSON());
 		
+		System.out.println(cube.isFrontCrossDone());
 		
+		System.out.println(cube.isFirstFloorDone());
+		
+//		System.out.println(cube.isSecondFloorDone());
+//		
+//		System.out.println(cube.isBackCross());
 	}
 
 }
