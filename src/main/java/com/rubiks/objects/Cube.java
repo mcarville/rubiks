@@ -1,17 +1,24 @@
 package com.rubiks.objects;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class Cube {
 
+	public static final String FRONT = "front";
+	public static final String NORTH = "north";
+	public static final String EAST = "east";
+	public static final String SOUTH = "south";
+	public static final String WEST = "west";
+	public static final String BACK = "back";
+	
 	public static final String LEFT = "left";
 	public static final String CENTER = "center";
 	public static final String RIGHT = "right";
@@ -62,30 +69,30 @@ public class Cube {
 		Map<String, CubeFace> cubeFaces = new HashMap<String, CubeFace>();
 		
 		CubeFace cubeFace = buildCubeFaceColors();
-		cubeFaces.put("front", cubeFace);
+		cubeFaces.put(FRONT, cubeFace);
 		
 		move(VERTICAL_EAST_WEST, CLOCKWISE);
-		cubeFaces.put("east", buildCubeFaceColors());
+		cubeFaces.put(EAST, buildCubeFaceColors());
 		cubeFaces.put("east_reverse", buildCubeFaceColors(true));
 		move(VERTICAL_EAST_WEST, "reverse clockwise");
 		
 		move(VERTICAL_EAST_WEST, "reverse clockwise");
-		cubeFaces.put("west", buildCubeFaceColors());
+		cubeFaces.put(WEST, buildCubeFaceColors());
 		cubeFaces.put("west_reverse", buildCubeFaceColors(true));
 		move(VERTICAL_EAST_WEST, CLOCKWISE);
 		
 		move(VERTICAL_EAST_WEST, CLOCKWISE);
 		move(VERTICAL_EAST_WEST, CLOCKWISE);
-		cubeFaces.put("back", buildCubeFaceColors(true));
+		cubeFaces.put(BACK, buildCubeFaceColors(true));
 		move(VERTICAL_EAST_WEST, "reverse clockwise");
 		move(VERTICAL_EAST_WEST, "reverse clockwise");
 		
 		move(VERTICAL_NORTH_SOUTH, CLOCKWISE); 
-		cubeFaces.put("north", buildCubeFaceColors());
+		cubeFaces.put(NORTH, buildCubeFaceColors());
 		move(VERTICAL_NORTH_SOUTH, "reverse clockwise");
 		
 		move(VERTICAL_NORTH_SOUTH, "reverse clockwise");
-		cubeFaces.put("south", buildCubeFaceColors());
+		cubeFaces.put(SOUTH, buildCubeFaceColors());
 		move(VERTICAL_NORTH_SOUTH, CLOCKWISE); 
 		
 		return cubeFaces;
@@ -200,53 +207,14 @@ public class Cube {
 		}
 		
 		return jsonArray;
-		
-		
 	}
 
-	public JSONObject toCubeAnalysisJSON() throws JSONException {
-		JSONObject jsonObject = new JSONObject();
-		
-		jsonObject.put("is_front_cross_done", isFrontCrossDone());
-
-		jsonObject.put("is_first_floor_done", isFirstFloorDone());
-		
-		return jsonObject;
+	public void executeMove(CubeMove cubeMove) {
+		if(StringUtils.isNotEmpty(cubeMove.getMagicMove()))
+			new CubeMagicMove().executeMagicMode(cubeMove.getMagicMove(), this);
+		if(StringUtils.isNotEmpty(cubeMove.getAxe()))
+			this.move(cubeMove.getAxe(), cubeMove.getLevel(), cubeMove.getDirection());
 	}
-	
-	public boolean isFrontCrossDone() {
-		String color = null;
-		int[] CROSS_INDEXES = {1, 3, 4, 5, 7};
-		for(int i : CROSS_INDEXES) {
-			Square square = squares.get(i);
-			SquareFace squareFace =	square.retrieveSquareFaceByOrientation("front");
-			if(color == null)
-				color = squareFace.getColor();
-			if(color != null && ! color.equals(squareFace.getColor()))
-				return false;
-		}
-		return true;
-	}
-	
-	public boolean isFirstFloorDone() {
-		String color = null;
-		for(int i = 0 ; i < squares.size() && i < 9 ; i++) {
-			Square square = squares.get(i);
-			SquareFace squareFace =	square.retrieveSquareFaceByOrientation("front");
-			if(color == null)
-				color = squareFace.getColor();
-			if(color != null && ! color.equals(squareFace.getColor()))
-				return false;
-		}
-		return true;
-	}
-	
-//	public boolean isSecondFloorDone() {
-//		if(! isFirstFloorDone())
-//			return false;
-//		
-//		
-//	}
 	
 //	public boolean isBackCross() {
 //
