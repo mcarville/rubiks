@@ -1,0 +1,53 @@
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>rubiks-cube-robot</artifactId>
+	<name>Rubiks Cube Robot</name>
+
+	<parent>
+		<groupId>com.rubiks</groupId>
+		<artifactId>rubiks</artifactId>
+		<version>IF.2016.3-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+			  <artifactId>maven-assembly-plugin</artifactId>
+			  <configuration>
+				<archive>
+		          <manifest>
+		            <mainClass>com.rubiks.robot.CubeKafkaRobot</mainClass>
+		          </manifest>
+		        </archive>
+				<descriptorRefs>
+				  <descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			  </configuration>
+			  <executions>
+				<execution>
+				  <id>make-assembly</id> <!-- this is used for inheritance merges -->
+				  <phase>package</phase> <!-- bind to the packaging phase -->
+				  <goals>
+					<goal>single</goal>
+				  </goals>
+				</execution>
+			  </executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.rubiks</groupId>
+			<artifactId>rubiks-cube</artifactId>
+			<version>${version}</version>
+		</dependency>
+	</dependencies>
+
+</project>
+

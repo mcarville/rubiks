@@ -9,13 +9,13 @@ deploy:
   api_key: $GITHUB_TOKEN
   github-token: $GITHUB_TOKEN
   keep-history: true
-  file: target/*
+  file: war/target/*
   file_glob: true
   on:
     branch: master
-after_success: docker build -t mcarville/sandbox:$DOCKET_TAG_NAME .
-deploy:
-  provider: script
-  script: bash docker_push
-  on:
-    branch: master
+#after_success: docker build -t mcarville/sandbox:$DOCKET_TAG_NAME .
+#deploy:
+#  provider: script
+#  script: bash docker_push
+#  on:
+#    branch: master
