@@ -20,7 +20,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeAnalysis;
 import com.rubiks.objects.CubeMove;
@@ -101,12 +100,10 @@ public class CubeKafkaRobot {
 		consumer.close();
 	}
 	
-	@VisibleForTesting
 	protected static void deliverResponse(String queryId, String response) {
 		deliverResponse(queryId, response, null);
 	}
 
-	@VisibleForTesting
 	protected static void deliverResponse(String queryId, String response, Callback callback) {
 		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(producerProperties);
 		ProducerRecord<String, String> data = new ProducerRecord<String, String>("response", queryId, response);
