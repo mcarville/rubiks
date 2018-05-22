@@ -11,6 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -19,6 +20,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeAnalysis;
 import com.rubiks.objects.CubeMove;
@@ -29,7 +31,7 @@ public class CubeKafkaRobot {
 	
 	protected static Logger LOGGER = Logger.getLogger(CubeKafkaRobot.class);
 	
-    private final static String BOOTSTRAP_SERVERS ="mathias-virtual-machine:9092";
+    private final static String BOOTSTRAP_SERVERS ="localhost:9092";
 
     private static Properties consumerProperties;
     private static Properties producerProperties;
@@ -99,10 +101,19 @@ public class CubeKafkaRobot {
 		consumer.close();
 	}
 	
-	private static void deliverResponse(String queryId, String response) {
+	@VisibleForTesting
+	protected static void deliverResponse(String queryId, String response) {
+		deliverResponse(queryId, response, null);
+	}
+
+	@VisibleForTesting
+	protected static void deliverResponse(String queryId, String response, Callback callback) {
 		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(producerProperties);
 		ProducerRecord<String, String> data = new ProducerRecord<String, String>("response", queryId, response);
-		producer.send(data);	
+		if(callback == null)
+			producer.send(data);
+		else
+			producer.send(data, callback);
 		producer.close();
 	}
 

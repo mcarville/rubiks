@@ -2,11 +2,14 @@ package com.rubiks.robot;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.UUID;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.log4j.Logger;
 
 import com.github.dockerjava.api.DockerClient;
@@ -57,6 +60,8 @@ public class CubeKafkaRobotTest extends TestCase {
 		}
 		catch(NotFoundException e) {
 			
+			logger.info(String.format("Docker image: %s does not exist locally => trying to get it from the registry", HA_KAFKA_HUB_NAME));
+			
 			dockerClient.pullImageCmd(HA_KAFKA_HUB_NAME)
 	        	.withAuthConfig(authConfig)
 	        	.exec(new PullImageResultCallback()).awaitSuccess();
@@ -95,7 +100,22 @@ public class CubeKafkaRobotTest extends TestCase {
 		}
 	}
 	
-	public void test() {
-
+	public void testKafkaProducer() {
+		CubeKafkaRobot.deliverResponse(UUID.randomUUID().toString(), "One test", new TestCallback());
+	}
+	
+	private class TestCallback implements Callback {
+	       @Override
+	       public void onCompletion(RecordMetadata recordMetadata, Exception exception) {
+	           if (exception != null) {
+	        	   throw new IllegalStateException("Error while producing message to topic :" + recordMetadata);
+	           } else {
+	        	   throw new IllegalStateException(String.format("sent message to topic:%s partition:%s  offset:%s", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset()));
+	           }
+	       }
+	   }
+	
+	public void test2() {
+		
 	}
 }
