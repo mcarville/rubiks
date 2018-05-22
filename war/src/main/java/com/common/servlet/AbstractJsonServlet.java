@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jettison.json.JSONObject;
 
-import com.sun.jersey.api.client.ClientHandlerException;
-
 
 
 
@@ -25,7 +23,7 @@ public abstract class AbstractJsonServlet extends AbstractServlet {
 		}
 		catch(Exception exception)
 		{
-			logger.error(exception.toString(), (! (exception instanceof ConnectException || exception instanceof ClientHandlerException)) ? exception : null);
+			logger.error(exception.toString(), (! (exception instanceof ConnectException)) ? exception : null);
 			AbstractJsonServletError errorHandler = new AbstractJsonServletError();
 			errorHandler.addExceptionFields(exception, jsonResponse);
 		}

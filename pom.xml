@@ -26,7 +26,7 @@
 		
 		<pscom.version>2015.3.1</pscom.version> <!-- 2015.2.2 (PROD) / 2015.3.1 (DEV) -->
 		<solrj.version>4.10.4-PES-2</solrj.version>
-		<jersey.version>1.17</jersey.version>
+		<jersey.version>2.23.1</jersey.version>
 		<felix.version>1.9.12</felix.version>
 		<aws-java-sdk.version>1.10.52</aws-java-sdk.version> <!-- Same as Talend -->
 		<apache-commons-version>2.6</apache-commons-version>
@@ -37,5 +37,14 @@
 		<module>rubiks-cube-robot</module>
 		<module>war</module>
 	</modules>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 	
 </project>
