@@ -1,13 +1,13 @@
 package com.rubiks.robot;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.log4j.Logger;
@@ -51,8 +51,10 @@ public class CubeKafkaRobotTest extends TestCase {
 		
 		String osName = System.getProperty("os.name");
 		if(StringUtils.isNotEmpty(osName) && osName.equalsIgnoreCase("Windows 7"))
-			containerConfig.withEnv(String.format("KAFKA_ADVERTISED_HOST_NAME=%s", retrieveDockerMachine()));
-		
+			containerConfig.withEnv(String.format("KAFKA_ADVERTISED_HOST_NAME=%s", "192.168.71.131")); // DEV Config
+		else
+			containerConfig.withEnv(String.format("KAFKA_ADVERTISED_HOST_NAME=%s", "127.0.0.1"));
+	
 		CreateContainerResponse container = null;
 		try 
 		{ 
@@ -76,17 +78,6 @@ public class CubeKafkaRobotTest extends TestCase {
 		dockerClient.startContainerCmd(containerId).exec();
 		
 		logger.info(String.format("Start container with containerId: %s", containerId));
-	}
-	
-	private String retrieveDockerMachine() throws IOException {
-		String command = "docker-machine ip default";
-	    Process child = Runtime.getRuntime().exec(command);
-
-	    String result = IOUtils.toString(child.getInputStream(), Charset.defaultCharset());
-	    
-	    logger.info(String.format("%s => %s", command, result));
-	    
-	    return result;
 	}
 	
 	@Override
@@ -115,7 +106,17 @@ public class CubeKafkaRobotTest extends TestCase {
 	       }
 	   }
 	
-	public void test2() {
+	public void testConsumer() {
+		Consumer<String, String> consumer = CubeKafkaRobot.buildConsumer();
+		String topic = "request";
 		
+		ConsumerRecords<String, String> records = consumer.poll(1000);
+		if(! records.isEmpty()) {
+			
+			for(ConsumerRecord<String, String> record : records.records(topic)) {
+				logger.info(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
+			}
+		}
+		consumer.close();
 	}
 }

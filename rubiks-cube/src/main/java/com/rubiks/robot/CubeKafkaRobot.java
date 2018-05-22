@@ -3,8 +3,9 @@ package com.rubiks.robot;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -30,7 +31,7 @@ public class CubeKafkaRobot {
 	
 	protected static Logger LOGGER = Logger.getLogger(CubeKafkaRobot.class);
 	
-    private final static String BOOTSTRAP_SERVERS ="localhost:9092";
+    private final static String BOOTSTRAP_SERVERS ="127.0.0.1:9092";
 
     private static Properties consumerProperties;
     private static Properties producerProperties;
@@ -55,8 +56,7 @@ public class CubeKafkaRobot {
 	
 	public static void main (String[] args) throws JSONException {
 		
-		Consumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
-		consumer.subscribe(Pattern.compile("request"));
+		Consumer<String, String> consumer = buildConsumer();
 		
 		while(isRunning) {
 			
@@ -98,6 +98,19 @@ public class CubeKafkaRobot {
 		}
 		
 		consumer.close();
+	}
+
+	protected static Consumer<String, String> buildConsumer() {
+		Collection<String> topics = new ArrayList<String>();
+		topics.add("request");
+		topics.add("response");
+		return buildConsumer(topics);
+	}
+	
+	protected static Consumer<String, String> buildConsumer(Collection<String> topics) {
+		Consumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
+		consumer.subscribe(topics);
+		return consumer;
 	}
 	
 	protected static void deliverResponse(String queryId, String response) {
