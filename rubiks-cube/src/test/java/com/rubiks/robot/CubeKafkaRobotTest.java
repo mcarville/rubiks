@@ -61,12 +61,16 @@ public class CubeKafkaRobotTest extends TestCase {
 	        	.withAuthConfig(authConfig)
 	        	.exec(new PullImageResultCallback()).awaitSuccess();
 			
+			logger.info(String.format("Docker image: %s has been downloaded", HA_KAFKA_HUB_NAME));
+			
 			container = containerConfig.exec();
 		}
 		
 		containerId = container.getId();
 		
 		dockerClient.startContainerCmd(containerId).exec();
+		
+		logger.info(String.format("Start container with containerId: %s", containerId));
 	}
 	
 	private String retrieveDockerMachine() throws IOException {
@@ -84,6 +88,8 @@ public class CubeKafkaRobotTest extends TestCase {
 	protected void tearDown() throws Exception {
 		if(dockerClient != null && StringUtils.isNotEmpty(containerId)) {
 			dockerClient.stopContainerCmd(containerId).exec();
+			
+			logger.info(String.format("Stop container with containerId: %s", containerId));
 			
 			dockerClient.close();
 		}
