@@ -4,7 +4,9 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,7 +59,8 @@ public class CubeKafkaRobot implements Runnable {
 	
 	@Override
 	public void run() {
-		Consumer<String, String> consumer = buildConsumer();
+		List<String> topics = Arrays.asList("request".split(","));
+		Consumer<String, String> consumer = buildConsumer(topics);
 		
 		while(isRunning) {
 			
@@ -116,8 +119,7 @@ public class CubeKafkaRobot implements Runnable {
 
 	protected static Consumer<String, String> buildConsumer() {
 		Collection<String> topics = new ArrayList<String>();
-		topics.add("request");
-		topics.add("response");
+		
 		return buildConsumer(topics);
 	}
 	
