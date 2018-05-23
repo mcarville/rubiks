@@ -30,7 +30,7 @@ import com.github.dockerjava.core.command.PullImageResultCallback;
 
 public class CubeKafkaRobotTest extends TestCase {
 
-	private static final String HA_KAFKA_HUB_NAME = "mcarville/sandbox:ha_kafka_3";
+	private static final String HA_KAFKA_HUB_NAME = "mcarville/sandbox:ha_kafka_4";
 
 	protected Logger logger = Logger.getLogger(getClass());
 	
@@ -103,90 +103,92 @@ public class CubeKafkaRobotTest extends TestCase {
 		}
 	}
 
-//	public void testKafkaProducer() {
-//		CubeKafkaRobot.writeMessageToQueue("response", UUID.randomUUID().toString(), "One test", new TestCallback());
-//	}
-//
-//	public void testConsumer() {
-//		Consumer<String, String> consumer = CubeKafkaRobot.buildConsumer();
-//		String topic = "request";
-//		
-//		ConsumerRecords<String, String> records = consumer.poll(1000);
-//		if(! records.isEmpty()) {
-//			
-//			for(ConsumerRecord<String, String> record : records.records(topic)) {
-//				logger.info(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
-//			}
-//		}
-//		consumer.close();
-//	}
-//	
-//	public void testConsumeAndProduceSingleRobot() throws InterruptedException {
-//		
-//		int todoRequestNumber = 10;
-//		
-//		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 1, 2);
-//		
-//		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
-//	}
-//	
-//	public void testConsumeAndProduceTwoRobot() throws InterruptedException {
-//		
-//		int todoRequestNumber = 10;
-//		
-//		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 2, 4);
-//		
-//		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
-//	}
-//	
-//	public void testConsumeAndProduceFiveRobot() throws InterruptedException {
-//		
-//		int todoRequestNumber = 10;
-//		
-//		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 5, 10);
-//		
-//		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
-//	}
-//
-//	protected TestRobotResponseConsumer executeConsumeAndProduceTest(int todoRequestNumber, int cubeKafkaRobotNumber, int requesterNumber) throws InterruptedException {
-//		ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1 + cubeKafkaRobotNumber);
-//		
-//		List<CubeKafkaRobot> cubeKafkaRobots = new ArrayList<CubeKafkaRobot>();
-//		for(int i = 0 ; i < cubeKafkaRobotNumber ; i++)
-//			cubeKafkaRobots.add(new CubeKafkaRobot());
-//		for(CubeKafkaRobot cubeKafkaRobot : cubeKafkaRobots)
-//			threadPoolExecutor.submit(cubeKafkaRobot);
-//		
-//		TestRobotResponseConsumer testRobotResponseConsumer = new TestRobotResponseConsumer();
-//		threadPoolExecutor.submit(testRobotResponseConsumer);
-//		
-//		int i = 0;
-//		while(i < todoRequestNumber) {
-//			CubeKafkaRobot.writeMessageToQueue("request", UUID.randomUUID().toString(), "One test", new TestCallback());
-//
-//			i++;
-//		}
-//		
-//		Thread.sleep(10 * 1000);
-//		
-//		for(CubeKafkaRobot cubeKafkaRobot : cubeKafkaRobots)
-//			cubeKafkaRobot.stop();
-//		
-//		testRobotResponseConsumer.stop();
-//		
-//		return testRobotResponseConsumer;
-//	}
-//
-//	private class TestCallback implements Callback {
-//	       @Override
-//	       public void onCompletion(RecordMetadata recordMetadata, Exception exception) {
-//	           if (exception != null) {
-//	        	   throw new IllegalStateException("Error while producing message to topic :" + recordMetadata);
-//	           } else {
-//	        	   logger.info(String.format("sent message to topic:%s partition:%s  offset:%s", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset()));
-//	           }
-//	       }
-//	   }
+	public void testKafkaProducer() {
+		CubeKafkaRobot.writeMessageToQueue("response", UUID.randomUUID().toString(), "One test", new TestCallback());
+	}
+
+	public void testConsumer() {
+		
+		String topic = "request";
+		List<String> topics = Arrays.asList(topic.split(","));
+		Consumer<String, String> consumer = CubeKafkaRobot.buildConsumer(topics);
+		
+		ConsumerRecords<String, String> records = consumer.poll(1000);
+		if(! records.isEmpty()) {
+			
+			for(ConsumerRecord<String, String> record : records.records(topic)) {
+				logger.info(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
+			}
+		}
+		consumer.close();
+	}
+	
+	public void testConsumeAndProduceSingleRobot() throws InterruptedException {
+		
+		int todoRequestNumber = 10;
+		
+		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 1, 2);
+		
+		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
+	}
+	
+	public void testConsumeAndProduceTwoRobot() throws InterruptedException {
+		
+		int todoRequestNumber = 10;
+		
+		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 2, 4);
+		
+		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
+	}
+	
+	public void testConsumeAndProduceFiveRobot() throws InterruptedException {
+		
+		int todoRequestNumber = 10;
+		
+		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 5, 10);
+		
+		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
+	}
+
+	protected TestRobotResponseConsumer executeConsumeAndProduceTest(int todoRequestNumber, int cubeKafkaRobotNumber, int requesterNumber) throws InterruptedException {
+		ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1 + cubeKafkaRobotNumber);
+		
+		List<CubeKafkaRobot> cubeKafkaRobots = new ArrayList<CubeKafkaRobot>();
+		for(int i = 0 ; i < cubeKafkaRobotNumber ; i++)
+			cubeKafkaRobots.add(new CubeKafkaRobot());
+		for(CubeKafkaRobot cubeKafkaRobot : cubeKafkaRobots)
+			threadPoolExecutor.submit(cubeKafkaRobot);
+		
+		TestRobotResponseConsumer testRobotResponseConsumer = new TestRobotResponseConsumer();
+		threadPoolExecutor.submit(testRobotResponseConsumer);
+		
+		int i = 0;
+		while(i < todoRequestNumber) {
+			CubeKafkaRobot.writeMessageToQueue("request", UUID.randomUUID().toString(), "One test", new TestCallback());
+
+			i++;
+		}
+		
+		Thread.sleep(20 * 1000);
+		
+		for(CubeKafkaRobot cubeKafkaRobot : cubeKafkaRobots)
+			cubeKafkaRobot.stop();
+		
+		testRobotResponseConsumer.stop();
+		
+		return testRobotResponseConsumer;
+	}
+
+	private class TestCallback implements Callback {
+	       @Override
+	       public void onCompletion(RecordMetadata recordMetadata, Exception exception) {
+	           if (exception != null) {
+	        	   throw new IllegalStateException("Error while producing message to topic :" + recordMetadata);
+	           } else {
+	        	   logger.info(String.format("sent message to topic:%s partition:%s  offset:%s", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset()));
+	           }
+	       }
+	   }
 
 	public void testKafkaConfig() {
 		
