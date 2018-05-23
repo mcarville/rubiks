@@ -30,7 +30,7 @@ import com.github.dockerjava.core.command.PullImageResultCallback;
 
 public class CubeKafkaRobotTest extends TestCase {
 
-	private static final String HA_KAFKA_HUB_NAME = "mcarville/sandbox:ha_kafka_4";
+	private static final String HA_KAFKA_HUB_NAME = "mcarville/sandbox:ha_kafka_5";
 
 	protected Logger logger = Logger.getLogger(getClass());
 	
