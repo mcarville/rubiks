@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,24 +26,24 @@ import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeAnalysis;
 import com.rubiks.objects.CubeMove;
 
-public class CubeKafkaRobot {
+public class CubeKafkaRobot implements Runnable {
 
 	// com.rubiks.robot.CubeKafkaRobot
 	
 	protected static Logger LOGGER = Logger.getLogger(CubeKafkaRobot.class);
 	
-    private final static String BOOTSTRAP_SERVERS ="127.0.0.1:9092";
+    private final static String BOOTSTRAP_SERVERS = DockerKafkaUtils.buildBrokerServersConnectionString();
 
-    private static Properties consumerProperties;
+    private static Properties DEFAULT_CONSUMER_PROPERTIES;
     private static Properties producerProperties;
 
     static {
     	
-		consumerProperties = new Properties();
-	    consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-		consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaConsumer");
-		consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		DEFAULT_CONSUMER_PROPERTIES = new Properties();
+	    DEFAULT_CONSUMER_PROPERTIES.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+		DEFAULT_CONSUMER_PROPERTIES.put(ConsumerConfig.GROUP_ID_CONFIG, "CubeKafkaRobot");
+		DEFAULT_CONSUMER_PROPERTIES.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		DEFAULT_CONSUMER_PROPERTIES.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
     	
         producerProperties = new Properties();
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
@@ -52,10 +53,10 @@ public class CubeKafkaRobot {
         producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
     }
 	
-	private static boolean isRunning = true;
+	protected boolean isRunning = true;
 	
-	public static void main (String[] args) throws JSONException {
-		
+	@Override
+	public void run() {
 		Consumer<String, String> consumer = buildConsumer();
 		
 		while(isRunning) {
@@ -91,13 +92,26 @@ public class CubeKafkaRobot {
 						responseCubeKafkaMessage.setCubeTaskReport(buildCubeTaskReport(true));
 					}
 					
-					deliverResponse(queryId, responseCubeKafkaMessage.toJSON().toString());
+					try {
+						writeMessageToQueue("response", queryId, responseCubeKafkaMessage.toJSON().toString());
+					} catch (JSONException e) {
+						LOGGER.error(e.toString(), e);
+					}
 				}
 			}
 			consumer.commitAsync();
 		}
 		
 		consumer.close();
+	}
+
+	public void stop() {
+		isRunning = false;
+	}
+	
+	public static void main (String[] args) {
+		CubeKafkaRobot cubeKafkaRobot = new CubeKafkaRobot();
+		cubeKafkaRobot.run();
 	}
 
 	protected static Consumer<String, String> buildConsumer() {
@@ -108,22 +122,34 @@ public class CubeKafkaRobot {
 	}
 	
 	protected static Consumer<String, String> buildConsumer(Collection<String> topics) {
-		Consumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
-		consumer.subscribe(topics);
-		return consumer;
+		return buildConsumer(topics, null);
 	}
 	
-	protected static void deliverResponse(String queryId, String response) {
-		deliverResponse(queryId, response, null);
+	protected static Consumer<String, String> buildConsumer(Collection<String> topics, String groupId) {
+		
+		Properties consumerProperties = (Properties)DEFAULT_CONSUMER_PROPERTIES.clone();
+		if(StringUtils.isNotEmpty(groupId))
+			consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		
+		Consumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
+		consumer.subscribe(topics);
+		return consumer;	
+	}
+	
+	protected static void writeMessageToQueue(String topic, String queryId, String response) {
+		writeMessageToQueue(topic, queryId, response, null);
 	}
 
-	protected static void deliverResponse(String queryId, String response, Callback callback) {
+	protected static void writeMessageToQueue(String topic, String queryId, String response, Callback callback) {
 		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(producerProperties);
-		ProducerRecord<String, String> data = new ProducerRecord<String, String>("response", queryId, response);
+		ProducerRecord<String, String> data = new ProducerRecord<String, String>(topic, queryId, response);
 		if(callback == null)
 			producer.send(data);
 		else
 			producer.send(data, callback);
+		
+		LOGGER.info(String.format("Write to topic: '%s' message: [%s => %s]", topic, queryId, response.length()));
+		
 		producer.close();
 	}
 
