@@ -71,31 +71,19 @@ angular.module('rubiks_module', [])
 					console.warn("$scope[" + toShare+ "] is null");
 			});
 
-			var jsonParams = {"command": "RetrieveCube", "devMode": false};
-			$http(buildHttpPostQuery(jsonParams, "rest/apiEndPoint"))
-				.success(
-					function(data) {
-						
-						$scope.rubiksData = data;
-					}
-				);
+			$scope.executeCubeMove(null, null, null, null);
 		}
 		
 		$scope.moveCube = function(axe, level, direction) {
-			var jsonParams = {"command": "RetrieveCube", "axe": axe, "level": level, "direction": direction, "devMode": false};
-			if($scope.highAvailability)
-				jsonParams["highAvailability"] = $scope.highAvailability;
-			$http(buildHttpPostQuery(jsonParams, "rest/apiEndPoint"))
-				.success(
-					function(data) {
-						
-						$scope.rubiksData = data;
-					}
-				);
+			$scope.executeCubeMove(axe, level, direction, null);
 		};
 		
 		$scope.moveCubeMagicMove = function(magicMove) {
-			var jsonParams = {"command": "RetrieveCube", "magicMove": magicMove, "devMode": false};
+			$scope.executeCubeMove(null, null, null, magicMove);
+		};
+		
+		$scope.executeCubeMove = function(axe, level, direction, magicMove) {
+			var jsonParams = {"command": "RetrieveCube", "axe": axe, "level": level, "direction": direction, "magicMove": magicMove, "devMode": false, "cubeJSON": ($scope.rubiksData != null) ? $scope.rubiksData.cubeJSON : null};
 			if($scope.highAvailability)
 				jsonParams["highAvailability"] = $scope.highAvailability;
 			$http(buildHttpPostQuery(jsonParams, "rest/apiEndPoint"))

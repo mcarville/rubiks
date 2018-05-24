@@ -31,14 +31,14 @@ public class RetrieveCube extends AbstractCommand {
 		
 //		String devMode = retrieveParamValue(parameterMap, "devMode", false);
 		
-		Cube cube = (Cube)request.getSession().getAttribute(CURRENT_CUBE_SESSION);
-		if(cube == null) {
-			cube = CubeFactory.createCube();
-			request.getSession().setAttribute(CURRENT_CUBE_SESSION, cube);
-			
-			System.out.println("Initialize new Cube, to session: " + request.getSession());
-		}
+		String cubeJSON = retrieveParamValue(parameterMap, "cubeJSON", false);
 
+		Cube cube = null;
+		if(StringUtils.isNotEmpty(cubeJSON))
+			cube = Cube.fromJSON(cubeJSON, Cube.class);
+		else
+			cube = CubeFactory.createCube();
+		
 		addHttpParameters(request, jsonResponse);
 		
 		String axe = retrieveParamValue(parameterMap, "axe", false);
@@ -60,13 +60,11 @@ public class RetrieveCube extends AbstractCommand {
 			
 			CubeKafkaMessage cubeKafkaMessage = kafkaRequester.executeQuery(cube, cubeMove);
 			
-			request.getSession().setAttribute(CURRENT_CUBE_SESSION, cubeKafkaMessage.getCube());
-			
 			jsonResponse.put("cube_kafka_message", cubeKafkaMessage.toJSON());
 		}
 		
-		Cube responseCube =  (Cube)request.getSession().getAttribute(CURRENT_CUBE_SESSION);
-		jsonResponse.put("cube_faces", responseCube.toCubeFacesJSON());
+		jsonResponse.put("cube_faces", cube.toCubeFacesJSON());
+		jsonResponse.put("cubeJSON", cube.toJSON());
 		
 		return jsonResponse;
 		
