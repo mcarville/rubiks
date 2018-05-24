@@ -1,7 +1,12 @@
 sudo: required
 services: docker
 language: java
-before_install: export GIT_COMMIT_BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi) && echo $GIT_COMMIT_BRANCH && export GIT_COMMIT_ID=$(git rev-parse --short HEAD) && echo $GIT_COMMIT_ID && export DOCKET_TAG_NAME="rubiks."$GIT_COMMIT_BRANCH"."$GIT_COMMIT_ID && echo $DOCKET_TAG_NAME
+before_install: 
+	export GIT_COMMIT_BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi) && echo $GIT_COMMIT_BRANCH
+	export GIT_COMMIT_ID=$(git rev-parse --short HEAD) && echo $GIT_COMMIT_ID
+	export DOCKET_TAG_NAME="rubiks."$GIT_COMMIT_BRANCH"."$GIT_COMMIT_ID && echo $DOCKET_TAG_NAME
+	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+	docker run -itd -p 9092:9092 -p 9000:9000 -e KAFKA_ADVERTISED_HOST_NAME=127.0.0.1 mcarville/sandbox:ha_kafka_5
 script: mvn install
 deploy:
   provider: releases
@@ -19,3 +24,4 @@ deploy:
   script: bash docker_push
   on:
     branch: master
+	
