@@ -10,8 +10,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.PartitionInfo;
 
 import com.rubiks.utils.DockerKafkaTest;
@@ -21,7 +19,7 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 
 
 	public void testKafkaProducer() {
-		CubeKafkaRobot.writeMessageToQueue("response", UUID.randomUUID().toString(), "One test", new TestCallback());
+		CubeKafkaRobot.writeMessageToQueue("response", UUID.randomUUID().toString(), "One test", new TestWriteCallback());
 	}
 
 	public void testConsumer() {
@@ -75,14 +73,22 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		TestRobotResponseConsumer testRobotResponseConsumer = new TestRobotResponseConsumer();
 		threadPoolExecutor.submit(testRobotResponseConsumer);
 		
+		while( ! testRobotResponseConsumer.isListening())
+			Thread.sleep(1000);
+		logger.info(String.format("testRobotResponseConsumer.isListening: %s", testRobotResponseConsumer.isListening()));
+		
 		int i = 0;
 		while(i < todoRequestNumber) {
-			CubeKafkaRobot.writeMessageToQueue("request", UUID.randomUUID().toString(), "One test", new TestCallback());
+			CubeKafkaRobot.writeMessageToQueue("request", UUID.randomUUID().toString(), "One test", new TestWriteCallback());
 
 			i++;
 		}
 		
 		Thread.sleep(20 * 1000);
+		
+		logger.info(String.format("TestWriteCallback.getCOMPLETED_TASKS_COUNT(): %s", TestWriteCallback.getCOMPLETED_TASKS_COUNT()));
+		
+		logger.info(String.format("TestRobotResponseConsumer.getREAD_MESSAGES_COUNT(): %s", TestRobotResponseConsumer.getREAD_MESSAGES_COUNT()));
 		
 		stopCubeKafkaRobots(cubeKafkaRobots);
 		
@@ -90,17 +96,6 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		
 		return testRobotResponseConsumer;
 	}
-	
-	private class TestCallback implements Callback {
-	       @Override
-	       public void onCompletion(RecordMetadata recordMetadata, Exception exception) {
-	           if (exception != null) {
-	        	   throw new IllegalStateException("Error while producing message to topic :" + recordMetadata);
-	           } else {
-	        	   logger.info(String.format("sent message to topic:%s partition:%s  offset:%s", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset()));
-	           }
-	       }
-	   }
 
 	public void testKafkaConfig() {
 		
