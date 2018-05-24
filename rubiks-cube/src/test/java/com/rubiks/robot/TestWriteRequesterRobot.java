@@ -14,16 +14,16 @@ public class TestWriteRequesterRobot implements Runnable {
 
 	protected Logger logger = Logger.getLogger(getClass());
 	
-	private final int todoRequestNumber;
+	protected final int todoRequestNumber;
 	
 	public TestWriteRequesterRobot(int todoRequestNumber) {
 		super();
 		this.todoRequestNumber = todoRequestNumber;
 	}
 
-	private boolean isRunning = true;
-	private int validRequestCount = 0;
-	private int invalidRequestCount = 0;
+	protected boolean isRunning = true;
+	protected int validRequestCount = 0;
+	protected int invalidRequestCount = 0;
 	
 	@Override
 	public void run() {
@@ -46,7 +46,7 @@ public class TestWriteRequesterRobot implements Runnable {
 		isRunning = false;
 	}
 
-	private String retrieveValidQuery() throws JSONException {
+	protected String retrieveValidQuery() throws JSONException {
 		Cube cube = CubeFactory.createCube();
 		
 		CubeMove cubeMove = new CubeMove(null, null, null, "mixCube");

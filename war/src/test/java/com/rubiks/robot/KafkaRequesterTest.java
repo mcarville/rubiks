@@ -1,5 +1,6 @@
 package com.rubiks.robot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -37,6 +38,20 @@ public class KafkaRequesterTest extends DockerKafkaTest {
 		assertTrue(cubeKafkaMessage.getCubeTaskReport().isOnError());
 	}
 	
+	protected CubeKafkaMessage executeCubeMoveRequest(CubeMove cubeMove) throws InterruptedException, ExecutionException, TimeoutException, JSONException {
+		List<CubeKafkaRobot> cubeKafkaRobots = startCubeRobots(1);
+		
+		KafkaRequester kafkaRequester = new KafkaRequester();
+		
+		Cube cube = CubeFactory.createCube();
+		
+		CubeKafkaMessage cubeKafkaMessage = kafkaRequester.executeQuery(cube, cubeMove);
+		
+		stopCubeKafkaRobots(cubeKafkaRobots);
+		
+		return cubeKafkaMessage;
+	}
+	
 	public void testMultiRobots() throws InterruptedException, ExecutionException, TimeoutException, JSONException {
 		List<CubeKafkaRobot> cubeKafkaRobots = startCubeRobots(3);
 		
@@ -56,18 +71,26 @@ public class KafkaRequesterTest extends DockerKafkaTest {
 		stopCubeKafkaRobots(cubeKafkaRobots);
 	}
 	
-	protected CubeKafkaMessage executeCubeMoveRequest(CubeMove cubeMove) throws InterruptedException, ExecutionException, TimeoutException, JSONException {
-		List<CubeKafkaRobot> cubeKafkaRobots = startCubeRobots(1);
+	public void testMultiRobotsMultiPlayer() throws InterruptedException, ExecutionException, TimeoutException, JSONException {
+		List<CubeKafkaRobot> cubeKafkaRobots = startCubeRobots(3);
 		
-		KafkaRequester kafkaRequester = new KafkaRequester();
+		int numberOfPlayers = 5;
+		int numberOfMoves = 15;
+		List<KafkaRequesterTestPlayingThread> kafkaRequesterTestPlayingThreads = new ArrayList<KafkaRequesterTestPlayingThread>();
+		ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(numberOfPlayers);
+		for(int i = 0 ; i < numberOfPlayers ; i++) {
+			KafkaRequesterTestPlayingThread kafkaRequesterTestPlayingThread = new KafkaRequesterTestPlayingThread(numberOfMoves);
+			kafkaRequesterTestPlayingThreads.add(kafkaRequesterTestPlayingThread);
+			threadPoolExecutor.submit(kafkaRequesterTestPlayingThread);
+		}
 		
-		Cube cube = CubeFactory.createCube();
+		while(areRunningWriteRequesterRobots(kafkaRequesterTestPlayingThreads)) {
+			Thread.sleep(1000);
+		}
 		
-		CubeKafkaMessage cubeKafkaMessage = kafkaRequester.executeQuery(cube, cubeMove);
+		assertEquals(numberOfPlayers * numberOfMoves, countTestWriteRequesterValid(kafkaRequesterTestPlayingThreads));
 		
 		stopCubeKafkaRobots(cubeKafkaRobots);
-		
-		return cubeKafkaMessage;
 	}
 
 	private List<CubeKafkaRobot>  startCubeRobots(int cubeKafkaRobotNumber) {

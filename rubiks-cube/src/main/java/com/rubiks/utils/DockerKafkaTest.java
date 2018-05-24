@@ -1,23 +1,17 @@
 package com.rubiks.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import org.apache.commons.lang.StringUtils;
+import junit.framework.TestCase;
+
 import org.apache.log4j.Logger;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.exception.NotFoundException;
-import com.github.dockerjava.api.model.AuthConfig;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.rubiks.robot.CubeKafkaRobot;
-
-import junit.framework.TestCase;
+import com.rubiks.robot.TestWriteRequesterRobot;
 
 public abstract class DockerKafkaTest extends TestCase {
 
@@ -108,4 +102,31 @@ public abstract class DockerKafkaTest extends TestCase {
 		for(CubeKafkaRobot cubeKafkaRobot : cubeKafkaRobots)
 			cubeKafkaRobot.stop();
 	}
+	
+	protected boolean areRunningWriteRequesterRobots(Collection<? extends TestWriteRequesterRobot> testWriteRequesterRobots){
+		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
+			if(testWriteRequesterRobot.isRunning())
+				return true;
+		}
+		return false;
+	}
+	
+	protected int countTestWriteRequesterValid(List<? extends TestWriteRequesterRobot> testWriteRequesterRobots) {
+		int count = 0;
+
+		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
+			count += testWriteRequesterRobot.getValidRequestCount();
+		}
+		return count;
+	}
+	
+	protected int countTestWriteRequesterInvalid(List<? extends TestWriteRequesterRobot> testWriteRequesterRobots) {
+		int count = 0;
+		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
+			count += testWriteRequesterRobot.getInvalidRequestCount();
+		}
+		return count;
+	}
+
+
 }

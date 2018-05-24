@@ -93,31 +93,6 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		assertEquals(countTestWriteRequesterInvalid(testWriteRequesterRobots), testRobotResponseConsumer.countOnMessagesByStatus(true));
 	}
 
-	private int countTestWriteRequesterValid(List<TestWriteRequesterRobot> testWriteRequesterRobots) {
-		int count = 0;
-
-		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
-			count += testWriteRequesterRobot.getValidRequestCount();
-		}
-		return count;
-	}
-	
-	private int countTestWriteRequesterInvalid(List<TestWriteRequesterRobot> testWriteRequesterRobots) {
-		int count = 0;
-		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
-			count += testWriteRequesterRobot.getInvalidRequestCount();
-		}
-		return count;
-	}
-	
-	protected boolean areRunningWriteRequesterRobots(List<TestWriteRequesterRobot> testWriteRequesterRobots){
-		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
-			if(testWriteRequesterRobot.isRunning())
-				return true;
-		}
-		return false;
-	}
-
 	public List<TestWriteRequesterRobot> startWriteRequesters(ThreadPoolExecutor threadPoolExecutor, int todoRequestNumber, int requesterNumber) {
 		List<TestWriteRequesterRobot> testWriteRequesterRobots = new ArrayList<TestWriteRequesterRobot>();
 		for(int i = 0 ; i < requesterNumber ; i++) {
