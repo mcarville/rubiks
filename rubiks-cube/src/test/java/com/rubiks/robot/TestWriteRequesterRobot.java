@@ -1,0 +1,67 @@
+package com.rubiks.robot;
+
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
+
+import com.rubiks.objects.Cube;
+import com.rubiks.objects.CubeFactory;
+import com.rubiks.objects.CubeMove;
+
+public class TestWriteRequesterRobot implements Runnable {
+
+	protected Logger logger = Logger.getLogger(getClass());
+	
+	private final int todoRequestNumber;
+	
+	public TestWriteRequesterRobot(int todoRequestNumber) {
+		super();
+		this.todoRequestNumber = todoRequestNumber;
+	}
+
+	private boolean isRunning = true;
+	private int validRequestCount = 0;
+	private int invalidRequestCount = 0;
+	
+	@Override
+	public void run() {
+		for(int i = 0 ; i < todoRequestNumber ; i++) {
+			try {
+	
+				if(ThreadLocalRandom.current().nextInt(0, 100 + 1) % 2 == 0) {
+					CubeKafkaRobot.writeMessageToQueue("request", UUID.randomUUID().toString(), "An Invalid query", new TestWriteCallback());
+					invalidRequestCount++;
+				}
+				else {
+					CubeKafkaRobot.writeMessageToQueue("request", UUID.randomUUID().toString(), retrieveValidQuery(), new TestWriteCallback());
+					validRequestCount++;
+				}
+			} 
+			catch (JSONException e) {
+				logger.error(e.toString(), e);
+			}
+		}
+		isRunning = false;
+	}
+
+	private String retrieveValidQuery() throws JSONException {
+		Cube cube = CubeFactory.createCube();
+		
+		CubeMove cubeMove = new CubeMove(null, null, null, "mixCube");
+		return new CubeKafkaMessage(cube, cubeMove).toJSON().toString();
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+	
+	public int getValidRequestCount() {
+		return validRequestCount;
+	}
+	
+	public int getInvalidRequestCount() {
+		return invalidRequestCount;
+	}
+}

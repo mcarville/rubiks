@@ -51,6 +51,18 @@ public class TestRobotResponseConsumer implements Runnable {
 		consumer.close();
 	}
 	
+	public void waitForListening() throws InterruptedException {
+		int maxWaitingIterations = 30;
+		int i = 0;
+		while( ! isListening()) {
+			if(i > maxWaitingIterations)
+				throw new IllegalStateException(String.format("TestRobotResponseConsumer has waited for %s iterations and it is still not ready", i));
+			Thread.sleep(1000);
+			i++;
+		}
+		logger.info(String.format("testRobotResponseConsumer.isListening: %s", isListening()));
+	}
+	
 	public boolean isListening() {
 		return isListening;
 	}
@@ -70,5 +82,14 @@ public class TestRobotResponseConsumer implements Runnable {
 
 	public static int getREAD_MESSAGES_COUNT() {
 		return READ_MESSAGES_COUNT;
+	}
+	
+	public int countOnMessagesByStatus(boolean onError) {
+		int count = 0;
+		for(CubeKafkaMessage cubeKafkaMessage : responseMap.values()) {
+			if(cubeKafkaMessage.getCubeTaskReport().isOnError() == onError)
+				count++;
+		}
+		return count;
 	}
 }

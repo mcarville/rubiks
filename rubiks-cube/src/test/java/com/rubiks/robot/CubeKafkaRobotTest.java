@@ -1,5 +1,6 @@
 package com.rubiks.robot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,49 +43,44 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		
 		int todoRequestNumber = 10;
 		
-		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 1, 2);
-		
-		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
+		executeConsumeAndProduceTest(todoRequestNumber, 1, 2);
 	}
 	
 	public void testConsumeAndProduceTwoRobot() throws InterruptedException {
 		
 		int todoRequestNumber = 10;
 		
-		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 2, 4);
-		
-		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
+		executeConsumeAndProduceTest(todoRequestNumber, 2, 4);
 	}
 	
 	public void testConsumeAndProduceFiveRobot() throws InterruptedException {
 		
 		int todoRequestNumber = 10;
 		
-		TestRobotResponseConsumer testRobotResponseConsumer = executeConsumeAndProduceTest(todoRequestNumber, 5, 10);
-		
-		assertEquals(todoRequestNumber, testRobotResponseConsumer.getResponseMap().size());
+		executeConsumeAndProduceTest(todoRequestNumber, 5, 10);
 	}
 
-	protected TestRobotResponseConsumer executeConsumeAndProduceTest(int todoRequestNumber, int cubeKafkaRobotNumber, int requesterNumber) throws InterruptedException {
-		ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1 + cubeKafkaRobotNumber);
+	protected void executeConsumeAndProduceTest(int todoRequestNumber, int cubeKafkaRobotNumber, int requesterNumber) throws InterruptedException {
+		ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1 + cubeKafkaRobotNumber + requesterNumber);
 		
 		List<CubeKafkaRobot> cubeKafkaRobots = startCubeKafkaRobots(threadPoolExecutor, cubeKafkaRobotNumber);
 		
 		TestRobotResponseConsumer testRobotResponseConsumer = new TestRobotResponseConsumer();
 		threadPoolExecutor.submit(testRobotResponseConsumer);
 		
-		while( ! testRobotResponseConsumer.isListening())
-			Thread.sleep(1000);
-		logger.info(String.format("testRobotResponseConsumer.isListening: %s", testRobotResponseConsumer.isListening()));
+		testRobotResponseConsumer.waitForListening();
 		
-		int i = 0;
-		while(i < todoRequestNumber) {
-			CubeKafkaRobot.writeMessageToQueue("request", UUID.randomUUID().toString(), "One test", new TestWriteCallback());
-
-			i++;
+		List<TestWriteRequesterRobot> testWriteRequesterRobots = startWriteRequesters(threadPoolExecutor, requesterNumber, todoRequestNumber);
+		
+		while(areRunningWriteRequesterRobots(testWriteRequesterRobots)) {
+			Thread.sleep(1000);
 		}
 		
-		Thread.sleep(20 * 1000);
+		for(int i = 0 ; i < 20 ; i++) {
+			Thread.sleep(1000);
+			if(TestWriteCallback.getCOMPLETED_TASKS_COUNT() == TestRobotResponseConsumer.getREAD_MESSAGES_COUNT())
+				break;
+		}
 		
 		logger.info(String.format("TestWriteCallback.getCOMPLETED_TASKS_COUNT(): %s", TestWriteCallback.getCOMPLETED_TASKS_COUNT()));
 		
@@ -94,23 +90,62 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		
 		testRobotResponseConsumer.stop();
 		
-		return testRobotResponseConsumer;
+		assertEquals(todoRequestNumber * requesterNumber, testRobotResponseConsumer.getResponseMap().size());
+		
+		assertEquals(countTestWriteRequesterValid(testWriteRequesterRobots), testRobotResponseConsumer.countOnMessagesByStatus(false));
+		
+		assertEquals(countTestWriteRequesterInvalid(testWriteRequesterRobots), testRobotResponseConsumer.countOnMessagesByStatus(true));
 	}
 
-	public void testKafkaConfig() {
-		
-		List<String> requiredTopics = Arrays.asList("request,response".split(",")); 
-		
-		Consumer<String, String> consumer = CubeKafkaRobot.buildConsumer();
-		Map<String, List<PartitionInfo>> topicsMap = consumer.listTopics();
-		
-		logger.info(String.format("topicsMap: %s", topicsMap));
-		
-		for(String topic : requiredTopics) {
-			assertTrue(topicsMap.containsKey(topic));
+	private int countTestWriteRequesterValid(List<TestWriteRequesterRobot> testWriteRequesterRobots) {
+		int count = 0;
+
+		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
+			count += testWriteRequesterRobot.getValidRequestCount();
 		}
-		
-		consumer.close();
+		return count;
 	}
+	
+	private int countTestWriteRequesterInvalid(List<TestWriteRequesterRobot> testWriteRequesterRobots) {
+		int count = 0;
+		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
+			count += testWriteRequesterRobot.getInvalidRequestCount();
+		}
+		return count;
+	}
+	
+	protected boolean areRunningWriteRequesterRobots(List<TestWriteRequesterRobot> testWriteRequesterRobots){
+		for(TestWriteRequesterRobot testWriteRequesterRobot : testWriteRequesterRobots) {
+			if(testWriteRequesterRobot.isRunning())
+				return true;
+		}
+		return false;
+	}
+
+	public List<TestWriteRequesterRobot> startWriteRequesters(ThreadPoolExecutor threadPoolExecutor, int todoRequestNumber, int requesterNumber) {
+		List<TestWriteRequesterRobot> testWriteRequesterRobots = new ArrayList<TestWriteRequesterRobot>();
+		for(int i = 0 ; i < requesterNumber ; i++) {
+			TestWriteRequesterRobot testWriteRequesterRobot = new TestWriteRequesterRobot(todoRequestNumber);
+			threadPoolExecutor.submit(testWriteRequesterRobot);
+			testWriteRequesterRobots.add(testWriteRequesterRobot);
+		}
+		return testWriteRequesterRobots;
+	}
+	
+//	public void testKafkaConfig() {
+//		
+//		List<String> requiredTopics = Arrays.asList("request,response".split(",")); 
+//		
+//		Consumer<String, String> consumer = CubeKafkaRobot.buildConsumer(requiredTopics);
+//		Map<String, List<PartitionInfo>> topicsMap = consumer.listTopics();
+//		
+//		logger.info(String.format("topicsMap: %s", topicsMap));
+//		
+//		for(String topic : requiredTopics) {
+//			assertTrue(topicsMap.containsKey(topic));
+//		}
+//		
+//		consumer.close();
+//	}
 	
 }
