@@ -1,11 +1,7 @@
 sudo: required
 services: docker
 language: java
-before_install: 
-  provider: script
-  script: bash docker_init
-  on:
-    branch: master
+before_install: bash docker_init
 script: mvn install
 deploy:
   provider: releases
