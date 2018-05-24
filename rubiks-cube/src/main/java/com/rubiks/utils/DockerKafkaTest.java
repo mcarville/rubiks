@@ -1,4 +1,4 @@
-package com.rubiks.robot;
+package com.rubiks.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import com.github.dockerjava.api.model.AuthConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.PullImageResultCallback;
+import com.rubiks.robot.CubeKafkaRobot;
 
 import junit.framework.TestCase;
 

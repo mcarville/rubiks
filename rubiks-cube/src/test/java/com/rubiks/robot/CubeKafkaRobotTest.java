@@ -14,6 +14,8 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.PartitionInfo;
 
+import com.rubiks.utils.DockerKafkaTest;
+
 public class CubeKafkaRobotTest extends DockerKafkaTest {
 
 

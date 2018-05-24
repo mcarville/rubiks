@@ -13,6 +13,7 @@ import com.rubiks.objects.Cube;
 import com.rubiks.objects.Cube.AXE;
 import com.rubiks.objects.CubeFactory;
 import com.rubiks.objects.CubeMove;
+import com.rubiks.utils.DockerKafkaTest;
 
 
 public class KafkaRequesterTest extends DockerKafkaTest {
