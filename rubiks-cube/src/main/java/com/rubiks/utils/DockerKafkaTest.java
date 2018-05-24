@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 
 import com.github.dockerjava.api.DockerClient;
 import com.rubiks.robot.CubeKafkaRobot;
-import com.rubiks.robot.TestWriteRequesterRobot;
 
 public abstract class DockerKafkaTest extends TestCase {
 

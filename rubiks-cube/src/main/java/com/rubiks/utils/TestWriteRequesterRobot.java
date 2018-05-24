@@ -1,4 +1,4 @@
-package com.rubiks.robot;
+package com.rubiks.utils;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -9,6 +9,9 @@ import org.codehaus.jettison.json.JSONException;
 import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeFactory;
 import com.rubiks.objects.CubeMove;
+import com.rubiks.robot.CubeKafkaMessage;
+import com.rubiks.robot.CubeKafkaRobot;
+import com.rubiks.robot.TestWriteCallback;
 
 public class TestWriteRequesterRobot implements Runnable {
 
