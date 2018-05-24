@@ -27,10 +27,12 @@ public class Cube extends AbstractJSONSerialiazer {
 	public static final String MIDDLE = "middle";
 	public static final String TOP = "top";
 	
-	public static final String VERTICAL_EAST_WEST = "vertical_east_west";
-	public static final String VERTICAL_NORTH_SOUTH = "vertical_north_south";
+	public static class AXE {
+		public static final String HORIZONTAL = "horizontal";
+		public static final String VERTICAL_EAST_WEST = "vertical_east_west";
+		public static final String VERTICAL_NORTH_SOUTH = "vertical_north_south";
+	}
 	
-	public static final String HORIZONTAL = "horizontal";
 	public static final String CLOCKWISE = "clockwise";
 	
 	private static Integer[][] HORIZONTAL_MOVES = {
@@ -81,40 +83,40 @@ public class Cube extends AbstractJSONSerialiazer {
 		CubeFace cubeFace = buildCubeFaceColors();
 		cubeFaces.put(FRONT, cubeFace);
 		
-		move(VERTICAL_EAST_WEST, CLOCKWISE);
+		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
 		cubeFaces.put(EAST, buildCubeFaceColors());
 		cubeFaces.put("east_reverse", buildCubeFaceColors(true));
-		move(VERTICAL_EAST_WEST, "reverse clockwise");
+		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
 		
-		move(VERTICAL_EAST_WEST, "reverse clockwise");
+		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
 		cubeFaces.put(WEST, buildCubeFaceColors());
 		cubeFaces.put("west_reverse", buildCubeFaceColors(true));
-		move(VERTICAL_EAST_WEST, CLOCKWISE);
+		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
 		
-		move(VERTICAL_EAST_WEST, CLOCKWISE);
-		move(VERTICAL_EAST_WEST, CLOCKWISE);
+		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
+		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
 		cubeFaces.put(BACK, buildCubeFaceColors(true));
-		move(VERTICAL_EAST_WEST, "reverse clockwise");
-		move(VERTICAL_EAST_WEST, "reverse clockwise");
+		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
+		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
 		
-		move(VERTICAL_NORTH_SOUTH, CLOCKWISE); 
+		move(AXE.VERTICAL_NORTH_SOUTH, CLOCKWISE); 
 		cubeFaces.put(NORTH, buildCubeFaceColors());
-		move(VERTICAL_NORTH_SOUTH, "reverse clockwise");
+		move(AXE.VERTICAL_NORTH_SOUTH, "reverse clockwise");
 		
-		move(VERTICAL_NORTH_SOUTH, "reverse clockwise");
+		move(AXE.VERTICAL_NORTH_SOUTH, "reverse clockwise");
 		cubeFaces.put(SOUTH, buildCubeFaceColors());
-		move(VERTICAL_NORTH_SOUTH, CLOCKWISE); 
+		move(AXE.VERTICAL_NORTH_SOUTH, CLOCKWISE); 
 		
 		return cubeFaces;
 	}
 	
 	public void move(String axe, String direction) {
-		if(axe.equals(HORIZONTAL)) {
+		if(axe.equals(AXE.HORIZONTAL)) {
 			moveCubeFace(axe, TOP, direction);
 			moveCubeFace(axe, MIDDLE, direction);
 			moveCubeFace(axe, BOTTOM, direction);
 		}
-		else if(axe.equals(VERTICAL_EAST_WEST) || axe.equals(VERTICAL_NORTH_SOUTH)) {
+		else if(axe.equals(AXE.VERTICAL_EAST_WEST) || axe.equals(AXE.VERTICAL_NORTH_SOUTH)) {
 			moveCubeFace(axe, LEFT, direction);
 			moveCubeFace(axe, CENTER, direction);
 			moveCubeFace(axe, RIGHT, direction);
@@ -125,7 +127,7 @@ public class Cube extends AbstractJSONSerialiazer {
 		if(direction == null)
 			direction = CLOCKWISE;
 		
-		if(level == null || level.equals(HORIZONTAL) || level.equals(VERTICAL_EAST_WEST) || level.equals(VERTICAL_NORTH_SOUTH)) {
+		if(level == null || level.equals(AXE.HORIZONTAL) || level.equals(AXE.VERTICAL_EAST_WEST) || level.equals(AXE.VERTICAL_NORTH_SOUTH)) {
 			move(axe, direction);
 		}
 		else {
@@ -138,7 +140,7 @@ public class Cube extends AbstractJSONSerialiazer {
 		int startIndex = -1;
 		Integer[][] moves = null;
 		
-		if(axe.equals(HORIZONTAL)) {
+		if(axe.equals(AXE.HORIZONTAL)) {
 			startIndex = level.equals(TOP) ? 0 :
 				level.equals(MIDDLE) ? 9 :
 					level.equals(BOTTOM) ?  18 : -1;
@@ -146,7 +148,7 @@ public class Cube extends AbstractJSONSerialiazer {
 			moves = direction.equals(CLOCKWISE) ? HORIZONTAL_MOVES : reverseMoves(HORIZONTAL_MOVES);
 		}
 		
-		if(axe.equals(VERTICAL_EAST_WEST)) {
+		if(axe.equals(AXE.VERTICAL_EAST_WEST)) {
 			startIndex = level.equals(LEFT) ? 0 :
 				level.equals(CENTER) ? 3 :
 					level.equals(RIGHT) ?  6: -1;
@@ -154,7 +156,7 @@ public class Cube extends AbstractJSONSerialiazer {
 			moves = direction.equals(CLOCKWISE) ? VERTICAL_EAST_WEST_MOVES : reverseMoves(VERTICAL_EAST_WEST_MOVES);
 		}
 		
-		if(axe.equals(VERTICAL_NORTH_SOUTH)) {
+		if(axe.equals(AXE.VERTICAL_NORTH_SOUTH)) {
 			startIndex = level.equals(LEFT) ? 0 :
 				level.equals(CENTER) ? 1 :
 					level.equals(RIGHT) ?  2: -1;

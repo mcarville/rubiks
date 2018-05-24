@@ -11,7 +11,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 public class Main {
 
     private final static String TOPIC = "request";
-    private final static String BOOTSTRAP_SERVERS ="192.168.71.131:9092";
+    private final static String BOOTSTRAP_SERVERS ="127.0.0.1:9092";
 
     private static Properties props;
     

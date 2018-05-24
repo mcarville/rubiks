@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.rubiks.robot.DockerKafkaUtils;
+
 public class KafkaResponseManager implements Runnable {
 
 	protected Logger logger = Logger.getLogger(getClass());
@@ -31,7 +33,7 @@ public class KafkaResponseManager implements Runnable {
 	private boolean isRunning = true;
 	
 	private final static String TOPIC = "response";
-	private final static String BOOTSTRAP_SERVERS ="mathias-virtual-machine:9092";
+	private final static String BOOTSTRAP_SERVERS = DockerKafkaUtils.buildBrokerServersConnectionString();
 	private static Properties properties;
 	
 	private ExecutorService executor;

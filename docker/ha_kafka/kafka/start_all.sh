@@ -10,9 +10,16 @@ fi
 
 bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
 
-bin/kafka-server-start.sh -daemon config/server.properties $OVERRIDE
+# wait for zookeeper to start
+PIDS=""
 
-java -jar $KAFKA_HOME/Kafdrop/target/kafdrop-2.0.6.jar --zookeeper.connect="127.0.0.1:2181" &
+while [ -z "$PIDS" ]
+do
+	sleep 1s
+	PIDS=$(ps ax | grep java | grep -i QuorumPeerMain | grep -v grep | awk '{print $1}')
+done
+
+bin/kafka-server-start.sh -daemon config/server.properties $OVERRIDE
 
 # re-create topics
 
@@ -21,5 +28,7 @@ do
   echo "${var}"
 	bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 3 --topic $var
 done
+
+java -jar $KAFKA_HOME/Kafdrop/target/kafdrop-2.0.6.jar --zookeeper.connect="127.0.0.1:2181" &
 
 sleep infinity

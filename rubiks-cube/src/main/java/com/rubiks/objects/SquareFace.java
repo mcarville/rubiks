@@ -3,6 +3,8 @@ package com.rubiks.objects;
 import java.util.Arrays;
 import java.util.List;
 
+import com.rubiks.objects.Cube.AXE;
+
 public class SquareFace {
 
 	public static final String RED = "red";
@@ -50,9 +52,9 @@ public class SquareFace {
 	}
 	
 	public void changeOrientation(String axe, String direction) {
-		String[] orientations = (axe.equalsIgnoreCase(Cube.HORIZONTAL)) ? HORIZONTAL_ORIENTATIONS : 
-			(axe.equalsIgnoreCase(Cube.VERTICAL_EAST_WEST)) ? VERTICAL_EAST_WEST_ORIENTATIONS :
-				(axe.equalsIgnoreCase(Cube.VERTICAL_NORTH_SOUTH)) ? VERTICAL_NORTH_SOUTH_HORIZONTAL_ORIENTATIONS :	null;
+		String[] orientations = (axe.equalsIgnoreCase(Cube.AXE.HORIZONTAL)) ? HORIZONTAL_ORIENTATIONS : 
+			(axe.equalsIgnoreCase(Cube.AXE.VERTICAL_EAST_WEST)) ? VERTICAL_EAST_WEST_ORIENTATIONS :
+				(axe.equalsIgnoreCase(Cube.AXE.VERTICAL_NORTH_SOUTH)) ? VERTICAL_NORTH_SOUTH_HORIZONTAL_ORIENTATIONS :	null;
 		
 		setOrientation(retrieveNextOrientation(orientations, getOrientation(), direction));
 	}

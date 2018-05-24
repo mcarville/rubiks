@@ -57,9 +57,8 @@ public class RetrieveCube extends AbstractCommand {
 		}
 		else {
 			KafkaRequester kafkaRequester = new KafkaRequester();
-			JSONObject jsonObject = kafkaRequester.executeQuery(cube, cubeMove);
 			
-			CubeKafkaMessage cubeKafkaMessage = CubeKafkaMessage.fromJSON(jsonObject.toString(), CubeKafkaMessage.class);
+			CubeKafkaMessage cubeKafkaMessage = kafkaRequester.executeQuery(cube, cubeMove);
 			
 			request.getSession().setAttribute(CURRENT_CUBE_SESSION, cubeKafkaMessage.getCube());
 			

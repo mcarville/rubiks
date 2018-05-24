@@ -3,6 +3,8 @@ FROM debian
 
 RUN apt-get update
 
+RUN apt-get install -y procps
+
 RUN apt-get -y install openjdk-8-jdk
 
 RUN java -version
