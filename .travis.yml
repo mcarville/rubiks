@@ -1,7 +1,9 @@
 sudo: required
 services: docker
 language: java
-before_install: bash docker_init
+before_install: export GIT_COMMIT_BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi) && echo $GIT_COMMIT_BRANCH
+export GIT_COMMIT_ID=$(git rev-parse --short HEAD) && echo $GIT_COMMIT_ID
+export DOCKER_TAG_NAME="rubiks."$GIT_COMMIT_BRANCH"."$GIT_COMMIT_ID && echo $DOCKER_TAG_NAME && bash docker_init
 script: mvn install
 deploy:
   provider: releases
@@ -13,7 +15,7 @@ deploy:
   file_glob: true
   on:
     branch: master
-after_success: docker build -t mcarville/sandbox:$DOCKET_TAG_NAME .
+after_success: docker build -t mcarville/sandbox:$DOCKER_TAG_NAME .
 deploy:
   provider: script
   script: bash docker_push
