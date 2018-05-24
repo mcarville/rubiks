@@ -1,4 +1,4 @@
-package com.rubiks.robot;
+package com.rubiks.utils;
 
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;

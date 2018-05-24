@@ -11,7 +11,6 @@ import com.rubiks.objects.CubeFactory;
 import com.rubiks.objects.CubeMove;
 import com.rubiks.robot.CubeKafkaMessage;
 import com.rubiks.robot.CubeKafkaRobot;
-import com.rubiks.robot.TestWriteCallback;
 
 public class TestWriteRequesterRobot implements Runnable {
 

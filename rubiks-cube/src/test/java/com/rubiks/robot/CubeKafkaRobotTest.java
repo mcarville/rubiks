@@ -12,6 +12,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 import com.rubiks.utils.DockerKafkaTest;
+import com.rubiks.utils.TestWriteCallback;
 import com.rubiks.utils.TestWriteRequesterRobot;
 
 public class CubeKafkaRobotTest extends DockerKafkaTest {
