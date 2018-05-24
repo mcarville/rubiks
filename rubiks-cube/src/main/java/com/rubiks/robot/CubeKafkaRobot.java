@@ -138,11 +138,11 @@ public class CubeKafkaRobot implements Runnable {
 		return consumer;	
 	}
 	
-	protected static void writeMessageToQueue(String topic, String queryId, String response) {
+	public static void writeMessageToQueue(String topic, String queryId, String response) {
 		writeMessageToQueue(topic, queryId, response, null);
 	}
 
-	protected static void writeMessageToQueue(String topic, String queryId, String response, Callback callback) {
+	public static void writeMessageToQueue(String topic, String queryId, String response, Callback callback) {
 		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(producerProperties);
 		ProducerRecord<String, String> data = new ProducerRecord<String, String>(topic, queryId, response);
 		if(callback == null)
