@@ -39,4 +39,30 @@ public class Square {
 		}
 		return null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((squareFaces == null) ? 0 : squareFaces.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Square other = (Square) obj;
+		if (squareFaces == null) {
+			if (other.squareFaces != null)
+				return false;
+		} else if (!squareFaces.equals(other.squareFaces))
+			return false;
+		return true;
+	}
 }

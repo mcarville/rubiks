@@ -17,4 +17,13 @@ public class AbstractJSONSerialiazer {
 		Gson gson = new Gson();
 		return (T)gson.fromJson(stringJSON, classType);
 	}
+	
+	@Override
+	public String toString() {
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			return super.toString();
+		}
+	}
 }

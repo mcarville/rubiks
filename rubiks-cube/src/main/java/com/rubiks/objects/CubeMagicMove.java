@@ -144,21 +144,23 @@ public class CubeMagicMove {
 		cube.move(Cube.AXE.HORIZONTAL, Cube.BOTTOM, Cube.CLOCKWISE);
 	}
 	
+	private  final static String[] AXES = {Cube.AXE.VERTICAL_EAST_WEST, Cube.AXE.VERTICAL_NORTH_SOUTH, Cube.AXE.HORIZONTAL};
+	private  final static String[] VERTICAL_LEVELS = {Cube.AXE.VERTICAL_EAST_WEST, Cube.AXE.VERTICAL_NORTH_SOUTH, Cube.LEFT, Cube.CENTER, Cube.RIGHT};
+	private  final static String[] HORIZONTAL_LEVELS = {Cube.AXE.HORIZONTAL, Cube.TOP, Cube.MIDDLE, Cube.BOTTOM};
+	private  final static String[] DIRECTIONS = {Cube.CLOCKWISE, "reverse"};
 	
-	private void executeCubeMix(Cube cube) {
-		
-		String[] AXES = {Cube.AXE.VERTICAL_EAST_WEST, Cube.AXE.VERTICAL_NORTH_SOUTH, Cube.AXE.HORIZONTAL};
-		String[] VERTICAL_LEVELS = {Cube.AXE.VERTICAL_EAST_WEST, Cube.AXE.VERTICAL_NORTH_SOUTH, Cube.LEFT, Cube.CENTER, Cube.RIGHT};
-		String[] HORIZONTAL_LEVELS = {Cube.AXE.HORIZONTAL, Cube.TOP, Cube.MIDDLE, Cube.BOTTOM};
-		String[] DIRECTIONS = {Cube.CLOCKWISE, "reverse"};
-		
+	public static CubeMove retrieveRamdomMove() {
+		String axe = AXES[new Random().nextInt(AXES.length)];
+		String level = axe.equals(Cube.AXE.HORIZONTAL) ? HORIZONTAL_LEVELS[new Random().nextInt(HORIZONTAL_LEVELS.length)]
+				: VERTICAL_LEVELS[new Random().nextInt(VERTICAL_LEVELS.length)];
+		return new CubeMove(axe, level, DIRECTIONS[new Random().nextInt(DIRECTIONS.length)], null);
+	}
+	
+	private void executeCubeMix(Cube cube) {		
 		int moveCount = 100 + new Random().nextInt(50);
 		for(int i = 0 ; i < moveCount; i++) {
-			
-			String axe = AXES[new Random().nextInt(AXES.length)];
-			String level = axe.equals(Cube.AXE.HORIZONTAL) ? HORIZONTAL_LEVELS[new Random().nextInt(HORIZONTAL_LEVELS.length)]
-					: VERTICAL_LEVELS[new Random().nextInt(VERTICAL_LEVELS.length)];
-			cube.move(axe, level, DIRECTIONS[new Random().nextInt(DIRECTIONS.length)]);
+
+			cube.executeMove(retrieveRamdomMove());
 		}
 	}
 }

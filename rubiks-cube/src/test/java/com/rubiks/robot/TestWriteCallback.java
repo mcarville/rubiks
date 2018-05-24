@@ -16,7 +16,7 @@ public class TestWriteCallback implements Callback {
 			throw new IllegalStateException(
 					"Error while producing message to topic :" + recordMetadata);
 		} else {
-			logger.info(String.format(
+			logger.debug(String.format(
 					"sent message to topic:%s partition:%s  offset:%s", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset()));
 		}
 		incrementCompletedTaskCount();

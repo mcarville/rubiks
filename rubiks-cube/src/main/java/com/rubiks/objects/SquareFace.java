@@ -78,4 +78,36 @@ public class SquareFace {
 			return orientationList.get(index);
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result
+				+ ((orientation == null) ? 0 : orientation.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SquareFace other = (SquareFace) obj;
+		if (color == null) {
+			if (other.color != null)
+				return false;
+		} else if (!color.equals(other.color))
+			return false;
+		if (orientation == null) {
+			if (other.orientation != null)
+				return false;
+		} else if (!orientation.equals(other.orientation))
+			return false;
+		return true;
+	}
 }

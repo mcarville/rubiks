@@ -133,6 +133,7 @@ public class Cube extends AbstractJSONSerialiazer {
 		else {
 			moveCubeFace(axe, level, direction);
 		}
+		setCubeAnalysis(CubeAnalysis.buildCubeAnalysis(this));
 	}
 	
 	private void moveCubeFace(String axe, String level, String direction) {
@@ -227,6 +228,38 @@ public class Cube extends AbstractJSONSerialiazer {
 		if(StringUtils.isNotEmpty(cubeMove.getAxe()))
 			this.move(cubeMove.getAxe(), cubeMove.getLevel(), cubeMove.getDirection());
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((cubeAnalysis == null) ? 0 : cubeAnalysis.hashCode());
+		result = prime * result + ((squares == null) ? 0 : squares.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cube other = (Cube) obj;
+		if (cubeAnalysis == null) {
+			if (other.cubeAnalysis != null)
+				return false;
+		} else if (!cubeAnalysis.equals(other.cubeAnalysis))
+			return false;
+		if (squares == null) {
+			if (other.squares != null)
+				return false;
+		} else if (!squares.equals(other.squares))
+			return false;
+		return true;
+	}
 	
 //	public boolean isBackCross() {
 //
@@ -236,5 +269,6 @@ public class Cube extends AbstractJSONSerialiazer {
 //
 //	}
 
+	
 
 }

@@ -12,6 +12,7 @@ import com.common.kafka.KafkaRequester;
 import com.rubiks.objects.Cube;
 import com.rubiks.objects.Cube.AXE;
 import com.rubiks.objects.CubeFactory;
+import com.rubiks.objects.CubeMagicMove;
 import com.rubiks.objects.CubeMove;
 import com.rubiks.utils.DockerKafkaTest;
 
@@ -34,6 +35,25 @@ public class KafkaRequesterTest extends DockerKafkaTest {
 		CubeKafkaMessage cubeKafkaMessage = executeCubeMoveRequest(cubeMove);
 		
 		assertTrue(cubeKafkaMessage.getCubeTaskReport().isOnError());
+	}
+	
+	public void testMultiRobots() throws InterruptedException, ExecutionException, TimeoutException, JSONException {
+		List<CubeKafkaRobot> cubeKafkaRobots = startCubeRobots(3);
+		
+		for(int i = 0 ; i < 15 ; i++) {
+			Cube startCube = CubeFactory.createCube();
+			CubeMove cubeMove = CubeMagicMove.retrieveRamdomMove(); 
+
+			KafkaRequester kafkaRequester = new KafkaRequester();
+			CubeKafkaMessage cubeKafkaMessage = kafkaRequester.executeQuery(startCube, cubeMove);
+			
+			Cube fromRobotCube = cubeKafkaMessage.getCube();
+
+			startCube.executeMove(cubeMove);
+			assertEquals(startCube, fromRobotCube);
+		}
+		
+		stopCubeKafkaRobots(cubeKafkaRobots);
 	}
 	
 	protected CubeKafkaMessage executeCubeMoveRequest(CubeMove cubeMove) throws InterruptedException, ExecutionException, TimeoutException, JSONException {

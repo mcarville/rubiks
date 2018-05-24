@@ -73,7 +73,7 @@ public class CubeKafkaRobot implements Runnable {
 					CubeKafkaMessage responseCubeKafkaMessage = null;
 					try {
 						
-						LOGGER.info(String.format("Receive query: %s", queryId));
+						LOGGER.debug(String.format("Receive query: %s", queryId));
 						
 						CubeKafkaMessage cubeKafkaMessage = CubeKafkaMessage.fromJSON(record.value(), CubeKafkaMessage.class);
 						
@@ -83,13 +83,13 @@ public class CubeKafkaRobot implements Runnable {
 						cube.executeMove(cubeMove);
 						cube.setCubeAnalysis(CubeAnalysis.buildCubeAnalysis(cube));
 						
-						LOGGER.info(String.format("Put response: %s to queue", queryId));
+						LOGGER.debug(String.format("Put response: %s to queue", queryId));
 						
 						responseCubeKafkaMessage = new CubeKafkaMessage(cube, cubeMove);
 						responseCubeKafkaMessage.setCubeTaskReport(buildCubeTaskReport(false));
 					}
 					catch (Exception e) {
-						LOGGER.error(e.toString(), e);
+						LOGGER.warn(e.toString(), e);
 						
 						responseCubeKafkaMessage = new CubeKafkaMessage(null, null);
 						responseCubeKafkaMessage.setCubeTaskReport(buildCubeTaskReport(true));
@@ -150,7 +150,7 @@ public class CubeKafkaRobot implements Runnable {
 		else
 			producer.send(data, callback);
 		
-		LOGGER.info(String.format("Write to topic: '%s' message: [%s => %s]", topic, queryId, response.length()));
+		LOGGER.debug(String.format("Write to topic: '%s' message: [%s => %s]", topic, queryId, response.length()));
 		
 		producer.close();
 	}

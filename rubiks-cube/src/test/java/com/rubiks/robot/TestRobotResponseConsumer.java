@@ -37,7 +37,7 @@ public class TestRobotResponseConsumer implements Runnable {
 			if(! records.isEmpty()) {
 				
 				for(ConsumerRecord<String, String> record : records.records(topic)) {
-					logger.info(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
+					logger.debug(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
 					
 					responseMap.put(record.key(), CubeKafkaMessage.fromJSON(record.value(), CubeKafkaMessage.class));
 					

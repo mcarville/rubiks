@@ -65,4 +65,34 @@ public class CubeAnalysis extends AbstractJSONSerialiazer {
 		}
 		return true;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (firstFloorDone ? 1231 : 1237);
+		result = prime * result + (frontCrossDone ? 1231 : 1237);
+		result = prime * result + (secondFloorDone ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CubeAnalysis other = (CubeAnalysis) obj;
+		if (firstFloorDone != other.firstFloorDone)
+			return false;
+		if (frontCrossDone != other.frontCrossDone)
+			return false;
+		if (secondFloorDone != other.secondFloorDone)
+			return false;
+		return true;
+	}
+	
+	
 }

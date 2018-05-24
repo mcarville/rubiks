@@ -3,7 +3,6 @@ package com.rubiks.robot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -11,13 +10,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.common.PartitionInfo;
 
 import com.rubiks.utils.DockerKafkaTest;
 
 public class CubeKafkaRobotTest extends DockerKafkaTest {
-
-
 
 	public void testKafkaProducer() {
 		CubeKafkaRobot.writeMessageToQueue("response", UUID.randomUUID().toString(), "One test", new TestWriteCallback());
@@ -33,7 +29,7 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		if(! records.isEmpty()) {
 			
 			for(ConsumerRecord<String, String> record : records.records(topic)) {
-				logger.info(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
+				logger.debug(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
 			}
 		}
 		consumer.close();
@@ -82,9 +78,9 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 				break;
 		}
 		
-		logger.info(String.format("TestWriteCallback.getCOMPLETED_TASKS_COUNT(): %s", TestWriteCallback.getCOMPLETED_TASKS_COUNT()));
+		logger.debug(String.format("TestWriteCallback.getCOMPLETED_TASKS_COUNT(): %s", TestWriteCallback.getCOMPLETED_TASKS_COUNT()));
 		
-		logger.info(String.format("TestRobotResponseConsumer.getREAD_MESSAGES_COUNT(): %s", TestRobotResponseConsumer.getREAD_MESSAGES_COUNT()));
+		logger.debug(String.format("TestRobotResponseConsumer.getREAD_MESSAGES_COUNT(): %s", TestRobotResponseConsumer.getREAD_MESSAGES_COUNT()));
 		
 		stopCubeKafkaRobots(cubeKafkaRobots);
 		
