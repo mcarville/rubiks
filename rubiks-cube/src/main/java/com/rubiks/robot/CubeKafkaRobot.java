@@ -89,7 +89,7 @@ public class CubeKafkaRobot implements Runnable {
 						responseCubeKafkaMessage.setCubeTaskReport(buildCubeTaskReport(false));
 					}
 					catch (Exception e) {
-						LOGGER.warn(e.toString(), e);
+						LOGGER.debug(e.toString(), e);
 						
 						responseCubeKafkaMessage = new CubeKafkaMessage(null, null);
 						responseCubeKafkaMessage.setCubeTaskReport(buildCubeTaskReport(true));

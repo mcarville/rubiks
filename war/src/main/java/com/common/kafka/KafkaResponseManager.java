@@ -1,9 +1,7 @@
 package com.common.kafka;
 
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,22 +13,14 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.rubiks.robot.DockerKafkaUtils;
+import com.rubiks.robot.KafkaTopicListener;
 
-public class KafkaResponseManager implements Runnable {
+public class KafkaResponseManager extends KafkaTopicListener {
 
-	protected Logger logger = Logger.getLogger(getClass());
-	
 	private KafkaResponseManager(){}
 	private static KafkaResponseManager instance;
-	
-	protected Map<String, JSONObject> responseFromKafkaMap = new ConcurrentHashMap<String, JSONObject>();
-	
-	private boolean isRunning = true;
 	
 	private final static String TOPIC = "response";
 	private final static String BOOTSTRAP_SERVERS = DockerKafkaUtils.buildBrokerServersConnectionString();
@@ -46,36 +36,34 @@ public class KafkaResponseManager implements Runnable {
 		properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 	}
 	
-	public synchronized static KafkaResponseManager getInstance() {
+	public synchronized static KafkaResponseManager getInstance() throws InterruptedException {
 		if(instance == null) {
 			instance = new KafkaResponseManager();
 			Thread thread = new Thread(instance);
 			thread.start();
+			
+			instance.waitForListening();
 			
 			instance.executor = Executors.newFixedThreadPool(10);
 		}
 		return instance;
 	}
 
-	public Map<String, JSONObject> getResponseFromKafkaMap() {
-		return responseFromKafkaMap;
-	}
-	
-	public Future<JSONObject> retrieveKafkaResponse(final String queryId) throws InterruptedException {
+	public Future<String> retrieveKafkaResponse(final String queryId) throws InterruptedException {
 
-		Callable<JSONObject> callable = new Callable<JSONObject>() {
+		Callable<String> callable = new Callable<String>() {
 			@Override
-			public JSONObject call() throws Exception {
+			public String call() throws Exception {
 
 				logger.debug(String.format("Start waiting for response for query: %s", queryId));
 				
 				long waitStart = System.currentTimeMillis();
 				while((System.currentTimeMillis() - waitStart) < (30 * 1000)) {
-					JSONObject jsonObject = KafkaResponseManager.getInstance().getResponseFromKafkaMap().get(queryId);
-					if(jsonObject != null) {
+					String response = KafkaResponseManager.getInstance().getResponseFromKafkaMap().get(queryId);
+					if(response != null) {
 						KafkaResponseManager.getInstance().getResponseFromKafkaMap().remove(queryId);						
 						logger.debug("Response is ready going to return jsonObject");
-						return jsonObject;
+						return response;
 					}
 					else {
 						logger.debug("No jsonObject found => Going to sleep");
@@ -86,7 +74,7 @@ public class KafkaResponseManager implements Runnable {
 			}
 		};
 		
-		Future<JSONObject> future = executor.submit(callable);
+		Future<String> future = executor.submit(callable);
 		
 		return future;
 	}
@@ -101,16 +89,15 @@ public class KafkaResponseManager implements Runnable {
 		while(isRunning) {
 			ConsumerRecords<String, String> records = consumer.poll(1000);
 
+			isListening = true;
+			
 			if(! records.isEmpty()) {
 				for(ConsumerRecord<String, String> record : records.records(TOPIC)) {
 					
 					logger.debug(String.format("Record received with key: %s", record.key()));
 					
-					try {
-						responseFromKafkaMap.put(record.key(), new JSONObject(record.value()));
-					} catch (JSONException e) {
-						logger.error(e.toString(), e);
-					}
+					
+					responseFromKafkaMap.put(record.key(), record.value());
 				}
 			}
 			consumer.commitAsync();

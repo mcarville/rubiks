@@ -12,7 +12,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeMove;
@@ -44,11 +43,11 @@ public class KafkaRequester {
 		producer.send(data);	
 		producer.close();
 		
-		Future<JSONObject> future = KafkaResponseManager.getInstance().retrieveKafkaResponse(queryId);
+		Future<String> future = KafkaResponseManager.getInstance().retrieveKafkaResponse(queryId);
 		
-		JSONObject jsonObject = future.get(30, TimeUnit.SECONDS);
+		String response = future.get(30, TimeUnit.SECONDS);
 		
-		return CubeKafkaMessage.fromJSON(jsonObject.toString(), CubeKafkaMessage.class);
+		return CubeKafkaMessage.fromJSON(response, CubeKafkaMessage.class);
 	}
 	
 }

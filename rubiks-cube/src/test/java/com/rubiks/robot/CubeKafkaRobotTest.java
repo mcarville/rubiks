@@ -74,9 +74,11 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 			Thread.sleep(1000);
 		}
 		
+		int totalTodoRequestNumber = todoRequestNumber * requesterNumber;
 		for(int i = 0 ; i < 20 ; i++) {
 			Thread.sleep(1000);
-			if(TestWriteCallback.getCOMPLETED_TASKS_COUNT() == TestRobotResponseConsumer.getREAD_MESSAGES_COUNT())
+			if(TestWriteCallback.getCOMPLETED_TASKS_COUNT() == totalTodoRequestNumber
+					&& TestWriteCallback.getCOMPLETED_TASKS_COUNT() == TestRobotResponseConsumer.getREAD_MESSAGES_COUNT())
 				break;
 		}
 		
@@ -88,7 +90,7 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		
 		testRobotResponseConsumer.stop();
 		
-		assertEquals(todoRequestNumber * requesterNumber, testRobotResponseConsumer.getResponseMap().size());
+		assertEquals(totalTodoRequestNumber, testRobotResponseConsumer.getResponseFromKafkaMap().size());
 		
 		assertEquals(countTestWriteRequesterValid(testWriteRequesterRobots), testRobotResponseConsumer.countOnMessagesByStatus(false));
 		

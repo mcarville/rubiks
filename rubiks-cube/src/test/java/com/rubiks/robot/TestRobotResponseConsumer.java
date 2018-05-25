@@ -1,25 +1,15 @@
 package com.rubiks.robot;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.log4j.Logger;
 
-public class TestRobotResponseConsumer implements Runnable {
-	
-	protected Logger logger = Logger.getLogger(getClass());
-	
-	protected boolean isRunning = true;
-	protected boolean isListening = false;
-	
-	protected Map<String,CubeKafkaMessage> responseMap = new HashMap<String, CubeKafkaMessage>();
-	
+public class TestRobotResponseConsumer extends KafkaTopicListener {
+
 	private static int READ_MESSAGES_COUNT = 0;
 	
 	@Override
@@ -39,7 +29,7 @@ public class TestRobotResponseConsumer implements Runnable {
 				for(ConsumerRecord<String, String> record : records.records(topic)) {
 					logger.debug(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
 					
-					responseMap.put(record.key(), CubeKafkaMessage.fromJSON(record.value(), CubeKafkaMessage.class));
+					responseFromKafkaMap.put(record.key(), record.value());
 					
 					incrementReadMessagesCount();
 				}
@@ -49,31 +39,6 @@ public class TestRobotResponseConsumer implements Runnable {
 		}
 		
 		consumer.close();
-	}
-	
-	public void waitForListening() throws InterruptedException {
-		int maxWaitingIterations = 30;
-		int i = 0;
-		while( ! isListening()) {
-			if(i > maxWaitingIterations)
-				throw new IllegalStateException(String.format("TestRobotResponseConsumer has waited for %s iterations and it is still not ready", i));
-			Thread.sleep(1000);
-			i++;
-		}
-		logger.info(String.format("testRobotResponseConsumer.isListening: %s", isListening()));
-	}
-	
-	public boolean isListening() {
-		return isListening;
-	}
-	
-	public void stop() {
-		isListening = false;
-		isRunning = false;
-	}
-	
-	public Map<String, CubeKafkaMessage> getResponseMap() {
-		return responseMap;
 	}
 	
 	private synchronized void incrementReadMessagesCount() {
@@ -86,7 +51,8 @@ public class TestRobotResponseConsumer implements Runnable {
 	
 	public int countOnMessagesByStatus(boolean onError) {
 		int count = 0;
-		for(CubeKafkaMessage cubeKafkaMessage : responseMap.values()) {
+		for(String value : responseFromKafkaMap.values()) {
+			CubeKafkaMessage cubeKafkaMessage = CubeKafkaMessage.fromJSON(value, CubeKafkaMessage.class);
 			if(cubeKafkaMessage.getCubeTaskReport().isOnError() == onError)
 				count++;
 		}
