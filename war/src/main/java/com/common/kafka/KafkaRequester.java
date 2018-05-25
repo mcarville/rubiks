@@ -38,12 +38,14 @@ public class KafkaRequester {
 		
 		CubeKafkaMessage cubeKafkaMessage = new CubeKafkaMessage(cube, cubeMove);
 		
+		KafkaResponseManager kafkaResponseManager = KafkaResponseManager.getInstance();
+		
 		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
 		ProducerRecord<String, String> data = new ProducerRecord<String, String>("request", queryId, cubeKafkaMessage.toJSON().toString());
 		producer.send(data);	
 		producer.close();
 		
-		Future<String> future = KafkaResponseManager.getInstance().retrieveKafkaResponse(queryId);
+		Future<String> future = kafkaResponseManager.retrieveKafkaResponse(queryId);
 		
 		String response = future.get(30, TimeUnit.SECONDS);
 		
