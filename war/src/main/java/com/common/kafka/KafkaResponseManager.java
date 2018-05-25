@@ -97,7 +97,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 					logger.debug(String.format("Record received with key: %s", record.key()));
 					
 					
-					responseFromKafkaMap.put(record.key(), record.value());
+					putKafkaReponse(record.key(), record.value());
 				}
 			}
 			consumer.commitAsync();

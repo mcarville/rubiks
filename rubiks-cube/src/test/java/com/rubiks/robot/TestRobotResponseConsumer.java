@@ -29,7 +29,7 @@ public class TestRobotResponseConsumer extends KafkaTopicListener {
 				for(ConsumerRecord<String, String> record : records.records(topic)) {
 					logger.debug(String.format("Record from topic (%s) %s => %s", topic, record.key(), record.value()));
 					
-					responseFromKafkaMap.put(record.key(), record.value());
+					putKafkaReponse(record.key(), record.value());
 					
 					incrementReadMessagesCount();
 				}
@@ -51,7 +51,7 @@ public class TestRobotResponseConsumer extends KafkaTopicListener {
 	
 	public int countOnMessagesByStatus(boolean onError) {
 		int count = 0;
-		for(String value : responseFromKafkaMap.values()) {
+		for(String value : getResponseFromKafkaMap().values()) {
 			CubeKafkaMessage cubeKafkaMessage = CubeKafkaMessage.fromJSON(value, CubeKafkaMessage.class);
 			if(cubeKafkaMessage.getCubeTaskReport().isOnError() == onError)
 				count++;
