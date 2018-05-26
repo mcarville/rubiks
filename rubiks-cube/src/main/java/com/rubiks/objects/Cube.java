@@ -1,5 +1,6 @@
 package com.rubiks.objects;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -222,7 +223,7 @@ public class Cube extends AbstractJSONSerialiazer {
 		return jsonArray;
 	}
 
-	public void executeMove(CubeMove cubeMove) {
+	public void executeMove(CubeMove cubeMove) throws IOException, JSONException {
 		if(StringUtils.isNotEmpty(cubeMove.getMagicMove()))
 			new CubeMagicMove().executeMagicMode(cubeMove.getMagicMove(), this);
 		if(StringUtils.isNotEmpty(cubeMove.getAxe()))

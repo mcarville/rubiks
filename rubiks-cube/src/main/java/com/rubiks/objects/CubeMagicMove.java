@@ -1,6 +1,13 @@
 package com.rubiks.objects;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Random;
+
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 
 public class CubeMagicMove {
 
@@ -14,8 +21,9 @@ public class CubeMagicMove {
 	public static final String FRONT_CROSS_SIDE_REVERSE = "frontCrossSideReverse";
 	public static final String SEXY_MOVE_RIGHT = "sexyMoveRight";
 	public static final String SEXY_MOVE_LEFT = "sexyMoveLeft";
-
-	public void executeMagicMode(String magicMove, Cube cube) {
+	public static final String REFERENCE_CUBE_MIX = "referenceCubeMix";
+	
+	public void executeMagicMode(String magicMove, Cube cube) throws IOException, JSONException {
 		switch(magicMove){
 			case FRONT_CROSS_SIDE_REVERSE:
 				executeFrontCrossSideReverse(cube);
@@ -46,6 +54,9 @@ public class CubeMagicMove {
 				break;
 			case MIX_CUBE :
 				executeCubeMix(cube);
+				break;
+			case REFERENCE_CUBE_MIX :
+				executeReferenceGameMix(cube);
 				break;
 		}
 		
@@ -156,11 +167,29 @@ public class CubeMagicMove {
 		return new CubeMove(axe, level, DIRECTIONS[new Random().nextInt(DIRECTIONS.length)], null);
 	}
 	
-	private void executeCubeMix(Cube cube) {		
+	private void executeCubeMix(Cube cube) throws IOException, JSONException {		
 		int moveCount = 100 + new Random().nextInt(50);
 		for(int i = 0 ; i < moveCount; i++) {
 
-			cube.executeMove(retrieveRamdomMove());
+			CubeMove cubeMove = retrieveRamdomMove();
+			cube.executeMove(cubeMove);
+		}
+	}
+	
+	private void executeReferenceGameMix(Cube cube) throws IOException, JSONException {
+		Cube initialCube = CubeFactory.createCube();
+		
+		for(int i = 0 ; i < initialCube.getSquares().size() ; i++) {
+			cube.getSquares().set(i, initialCube.getSquares().get(i));
+		}
+		
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("reference_mix.json");
+                		
+		String jsonContent = IOUtils.toString(in, Charset.defaultCharset());
+		JSONArray jsonArray = new JSONArray(jsonContent);
+		for(int i = 0 ; i < jsonArray.length() ; i++) {
+			CubeMove cubeMove = CubeMove.fromJSON(jsonArray.getString(i), CubeMove.class);
+			cube.executeMove(cubeMove);
 		}
 	}
 }
