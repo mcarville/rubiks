@@ -49,6 +49,8 @@ public class CubeFactory {
 		squares.add(new Square(new SquareFace(SquareFace.YELLOW, SquareFace.BACK), new SquareFace(SquareFace.BLUE, SquareFace.SOUTH)));
 		squares.add(new Square(new SquareFace(SquareFace.BLUE, SquareFace.SOUTH), new SquareFace(SquareFace.YELLOW, SquareFace.BACK), new SquareFace(SquareFace.ORANGE, SquareFace.EAST)));
 		
-		return new Cube(squares);
+		Cube cube = new Cube(squares);
+		cube.setCubeAnalysis(CubeAnalysis.buildCubeAnalysis(cube));
+		return cube;
 	}
 }

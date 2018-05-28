@@ -5,7 +5,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.google.gson.Gson;
 
-public class AbstractJSONSerialiazer {
+public class AbstractJSONSerialiazer implements Cloneable {
 
 	public JSONObject toJSON() throws JSONException {
 		Gson gson = new Gson();

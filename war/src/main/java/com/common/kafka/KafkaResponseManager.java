@@ -21,6 +21,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 
 	private KafkaResponseManager(){}
 	private static KafkaResponseManager instance;
+	private static Object initLock = new Object();
 	
 	private final static String TOPIC = "response";
 	private final static String BOOTSTRAP_SERVERS = DockerKafkaUtils.buildBrokerServersConnectionString();
@@ -36,15 +37,20 @@ public class KafkaResponseManager extends KafkaTopicListener {
 		properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 	}
 	
-	public synchronized static KafkaResponseManager getInstance() throws InterruptedException {
-		if(instance == null) {
-			instance = new KafkaResponseManager();
-			Thread thread = new Thread(instance);
-			thread.start();
-			
-			instance.waitForListening();
-			
-			instance.executor = Executors.newFixedThreadPool(10);
+	public static KafkaResponseManager getInstance() throws InterruptedException {
+		if(instance != null)
+			return instance;
+		
+		synchronized (initLock) {
+			if(instance == null) {
+				instance = new KafkaResponseManager();
+				Thread thread = new Thread(instance);
+				thread.start();
+				
+				instance.waitForListening();
+				
+				instance.executor = Executors.newFixedThreadPool(10);
+			}
 		}
 		return instance;
 	}

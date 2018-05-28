@@ -84,29 +84,36 @@ public class Cube extends AbstractJSONSerialiazer {
 		CubeFace cubeFace = buildCubeFaceColors();
 		cubeFaces.put(FRONT, cubeFace);
 		
-		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
-		cubeFaces.put(EAST, buildCubeFaceColors());
-		cubeFaces.put("east_reverse", buildCubeFaceColors(true));
-		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
+		try {
+			Cube cloneCube = (Cube)clone();
+	
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
+			cubeFaces.put(EAST, buildCubeFaceColors());
+			cubeFaces.put("east_reverse", buildCubeFaceColors(true));
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
+			
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
+			cubeFaces.put(WEST, buildCubeFaceColors());
+			cubeFaces.put("west_reverse", buildCubeFaceColors(true));
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
+			
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
+			cubeFaces.put(BACK, buildCubeFaceColors(true));
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
+			cloneCube.move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
+			
+			cloneCube.move(AXE.VERTICAL_NORTH_SOUTH, CLOCKWISE); 
+			cubeFaces.put(NORTH, buildCubeFaceColors());
+			cloneCube.move(AXE.VERTICAL_NORTH_SOUTH, "reverse clockwise");
+			
+			cloneCube.move(AXE.VERTICAL_NORTH_SOUTH, "reverse clockwise");
+			cubeFaces.put(SOUTH, buildCubeFaceColors());
+			cloneCube.move(AXE.VERTICAL_NORTH_SOUTH, CLOCKWISE); 
 		
-		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
-		cubeFaces.put(WEST, buildCubeFaceColors());
-		cubeFaces.put("west_reverse", buildCubeFaceColors(true));
-		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
-		
-		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
-		move(AXE.VERTICAL_EAST_WEST, CLOCKWISE);
-		cubeFaces.put(BACK, buildCubeFaceColors(true));
-		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
-		move(AXE.VERTICAL_EAST_WEST, "reverse clockwise");
-		
-		move(AXE.VERTICAL_NORTH_SOUTH, CLOCKWISE); 
-		cubeFaces.put(NORTH, buildCubeFaceColors());
-		move(AXE.VERTICAL_NORTH_SOUTH, "reverse clockwise");
-		
-		move(AXE.VERTICAL_NORTH_SOUTH, "reverse clockwise");
-		cubeFaces.put(SOUTH, buildCubeFaceColors());
-		move(AXE.VERTICAL_NORTH_SOUTH, CLOCKWISE); 
+		} catch (CloneNotSupportedException e) {
+			throw new IllegalStateException(e);
+		}
 		
 		return cubeFaces;
 	}
@@ -234,8 +241,6 @@ public class Cube extends AbstractJSONSerialiazer {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((cubeAnalysis == null) ? 0 : cubeAnalysis.hashCode());
 		result = prime * result + ((squares == null) ? 0 : squares.hashCode());
 		return result;
 	}
@@ -249,11 +254,6 @@ public class Cube extends AbstractJSONSerialiazer {
 		if (getClass() != obj.getClass())
 			return false;
 		Cube other = (Cube) obj;
-		if (cubeAnalysis == null) {
-			if (other.cubeAnalysis != null)
-				return false;
-		} else if (!cubeAnalysis.equals(other.cubeAnalysis))
-			return false;
 		if (squares == null) {
 			if (other.squares != null)
 				return false;
@@ -261,15 +261,4 @@ public class Cube extends AbstractJSONSerialiazer {
 			return false;
 		return true;
 	}
-	
-//	public boolean isBackCross() {
-//
-//	}
-//	
-//	public boolean isCubeDone() {
-//
-//	}
-
-	
-
 }

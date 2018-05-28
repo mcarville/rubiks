@@ -91,6 +91,7 @@ angular.module('rubiks_module', [])
 					function(data) {
 						
 						$scope.rubiksData = data;
+						$scope.rubiksAnalysis = data.cubeJSON.cubeAnalysis;
 					}
 				);
 		};

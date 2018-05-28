@@ -178,12 +178,16 @@ public class CubeMagicMove {
 	
 	private void executeReferenceGameMix(Cube cube) throws IOException, JSONException {
 		Cube initialCube = CubeFactory.createCube();
-		
 		for(int i = 0 ; i < initialCube.getSquares().size() ; i++) {
 			cube.getSquares().set(i, initialCube.getSquares().get(i));
 		}
 		
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream("reference_mix.json");
+		executeCubeMoveFromResourceJSON(cube, "reference_mix.json");
+	}
+
+	public void executeCubeMoveFromResourceJSON(Cube cube, String jsonFileName) throws IOException, JSONException {
+
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(jsonFileName);
                 		
 		String jsonContent = IOUtils.toString(in, Charset.defaultCharset());
 		JSONArray jsonArray = new JSONArray(jsonContent);

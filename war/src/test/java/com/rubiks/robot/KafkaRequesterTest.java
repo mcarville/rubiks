@@ -53,7 +53,7 @@ public class KafkaRequesterTest extends DockerKafkaTest {
 		return cubeKafkaMessage;
 	}
 	
-	public void testMultiRobots() throws InterruptedException, ExecutionException, TimeoutException, JSONException, IOException {
+	public void testMultiRobots() throws InterruptedException, ExecutionException, TimeoutException, JSONException, IOException, CloneNotSupportedException {
 		List<CubeKafkaRobot> cubeKafkaRobots = startCubeRobots(3);
 		
 		for(int i = 0 ; i < 15 ; i++) {
@@ -66,6 +66,10 @@ public class KafkaRequesterTest extends DockerKafkaTest {
 			Cube fromRobotCube = cubeKafkaMessage.getCube();
 
 			startCube.executeMove(cubeMove);
+
+//			assertEquals(startCube.getCubeAnalysis(), fromRobotCube.getCubeAnalysis());
+//			TODO: analyse why this is not working
+			
 			assertEquals(startCube, fromRobotCube);
 		}
 		

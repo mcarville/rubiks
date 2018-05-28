@@ -30,6 +30,13 @@ public class KafkaRequesterTestPlayingThread extends TestWriteRequesterRobot {
 				cube.executeMove(cubeMove);
 				
 				if( ! cube.equals(cubeKafkaMessage.getCube())) {
+					
+					logger.error(cube.getSquares());
+					logger.error(cubeKafkaMessage.toJSON());
+					
+					logger.error(String.format("cube: %s", cube.getCubeAnalysis()));
+					logger.error(String.format("cubeKafkaMessage.getCube(): %s", cubeKafkaMessage.getCube().getCubeAnalysis()));
+					
 					throw new IllegalStateException("Incoherence between local Cube and the one done by CubeRobot");
 				}
 				
