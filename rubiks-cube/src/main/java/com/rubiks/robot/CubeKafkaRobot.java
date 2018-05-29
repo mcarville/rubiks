@@ -165,7 +165,7 @@ public class CubeKafkaRobot implements Runnable {
 		catch(UnknownHostException exception) {}
 		
 		return new CubeTaskReport(onError,
-				ManagementFactory.getRuntimeMXBean().getName(), hostname);
+				ManagementFactory.getRuntimeMXBean().getName(), hostname, System.getenv().get("DOCKER_ALIAS"));
 	}
 	
 }

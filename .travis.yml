@@ -13,7 +13,7 @@ deploy:
   file_glob: true
   on:
     branch: master
-after_success: docker build -t mcarville/sandbox:$DOCKER_TAG_NAME .
+after_success: docker build -t mcarville/sandbox:$DOCKER_TAG_NAME ./war && docker build -t mcarville/sandbox:rubiks-cube-robot ./rubiks-cube-robot
 deploy:
   provider: script
   script: bash docker_push
