@@ -17,10 +17,6 @@ import com.rubiks.robot.CubeKafkaMessage;
 
 public class RetrieveCube extends AbstractCommand {
 
-	private static final String CURRENT_CUBE_SESSION = "CURRENT_CUBE";
-//	private static Cube DEV_CUBE = CubeFactory.createCube();
-	
-	
 	@Override
 	public String getCommandId() {
 		return "RetrieveCube";
@@ -28,8 +24,6 @@ public class RetrieveCube extends AbstractCommand {
 
 	@Override
 	public JSONObject executeCommand(Map<String, String[]> parameterMap, HttpServletRequest request, JSONObject jsonResponse) throws Exception {
-		
-//		String devMode = retrieveParamValue(parameterMap, "devMode", false);
 		
 		String cubeJSON = retrieveParamValue(parameterMap, "cubeJSON", false);
 
@@ -59,7 +53,7 @@ public class RetrieveCube extends AbstractCommand {
 			KafkaRequester kafkaRequester = new KafkaRequester();
 			
 			CubeKafkaMessage cubeKafkaMessage = kafkaRequester.executeQuery(cube, cubeMove);
-			
+			cube = cubeKafkaMessage.getCube();
 			jsonResponse.put("cube_kafka_message", cubeKafkaMessage.toJSON());
 		}
 		

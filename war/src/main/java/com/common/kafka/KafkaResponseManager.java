@@ -43,13 +43,15 @@ public class KafkaResponseManager extends KafkaTopicListener {
 		
 		synchronized (initLock) {
 			if(instance == null) {
-				instance = new KafkaResponseManager();
-				Thread thread = new Thread(instance);
+				KafkaResponseManager kafkaResponseManager = new KafkaResponseManager();
+				Thread thread = new Thread(kafkaResponseManager);
 				thread.start();
 				
-				instance.waitForListening();
+				kafkaResponseManager.waitForListening();
 				
-				instance.executor = Executors.newFixedThreadPool(10);
+				kafkaResponseManager.executor = Executors.newFixedThreadPool(10);
+				
+				instance = kafkaResponseManager;
 			}
 		}
 		return instance;
@@ -65,9 +67,8 @@ public class KafkaResponseManager extends KafkaTopicListener {
 				
 				long waitStart = System.currentTimeMillis();
 				while((System.currentTimeMillis() - waitStart) < (30 * 1000)) {
-					String response = KafkaResponseManager.getInstance().getResponseFromKafkaMap().get(queryId);
+					String response = KafkaResponseManager.getInstance().getKafkaReponse(queryId);
 					if(response != null) {
-						KafkaResponseManager.getInstance().getResponseFromKafkaMap().remove(queryId);						
 						logger.debug("Response is ready going to return jsonObject");
 						return response;
 					}
@@ -79,6 +80,9 @@ public class KafkaResponseManager extends KafkaTopicListener {
 				throw new IllegalStateException(String.format("Can not get a jsonObject after waiting for %s ms", (System.currentTimeMillis() - waitStart)));
 			}
 		};
+		
+		if(executor == null)
+			throw new IllegalStateException("KafkaResponseManager - executor can not be null");
 		
 		Future<String> future = executor.submit(callable);
 		

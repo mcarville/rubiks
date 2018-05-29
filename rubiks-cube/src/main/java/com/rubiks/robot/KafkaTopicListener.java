@@ -61,6 +61,12 @@ public abstract class KafkaTopicListener implements Runnable {
 		responseFromKafkaCache.put(new Element(key, value));
 	}
 	
+	protected String getKafkaReponse(String key) {
+		Element element = responseFromKafkaCache.get(key);
+		return (element != null && element.getObjectValue() != null
+				? element.getObjectValue().toString() : null);
+	}
+	
 	protected Map<String, String> getResponseFromKafkaMap() {
 		Map<String, String> responseFromKafkaMap = new ConcurrentHashMap<String, String>();
 		for(Object key : responseFromKafkaCache.getKeys()) {
