@@ -7,7 +7,7 @@
 				<div class="left width50">High Availability <input type="checkbox" ng-model="highAvailability"></input></div>
 				<div class="left width50" ng-if="highAvailability" style="line-height: 40px;">
 					<div>{{rubiksData.cube_kafka_message.cubeTaskReport.runtimeMXBean}}</div>
-					<div>{{rubiksData.cube_kafka_message.cubeTaskReport.hostname}}</div>
+					<div ng-if="rubiksData.cube_kafka_message.cubeTaskReport.dockerAlias != null">dockerAlias: {{rubiksData.cube_kafka_message.cubeTaskReport.dockerAlias}}</div>
 				</div>
 			</div>
 		</div>
