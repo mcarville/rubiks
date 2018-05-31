@@ -2,7 +2,7 @@ sudo: required
 services: docker
 language: java
 before_install: export GIT_COMMIT_BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi) && echo $GIT_COMMIT_BRANCH && export GIT_COMMIT_ID=$(git rev-parse --short HEAD) && echo $GIT_COMMIT_ID && export DOCKER_TAG_NAME="rubiks."$GIT_COMMIT_BRANCH"."$GIT_COMMIT_ID && echo $DOCKER_TAG_NAME && bash docker_init
-script: mvn install
+script: mvn install && mvn cobertura:cobertura
 deploy:
   provider: releases
   skip-cleanup: true
@@ -13,7 +13,7 @@ deploy:
   file_glob: true
   on:
     branch: master
-after_success: docker build -t mcarville/sandbox:$DOCKER_TAG_NAME ./war && docker build -t mcarville/sandbox:rubiks-cube-robot ./rubiks-cube-robot
+after_success: docker build -t mcarville/sandbox:$DOCKER_TAG_NAME ./war && docker build -t mcarville/sandbox:rubiks-cube-robot ./rubiks-cube-robot && bash <(curl -s https://codecov.io/bash) -t a405876d-a14e-42d5-944e-71e8b8652d20
 deploy:
   provider: script
   script: bash docker_push
