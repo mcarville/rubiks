@@ -222,41 +222,6 @@ function buildJsonFromParams(httpParams) {
   return result;
 }
 
-function buildFacetValues (facetResponse) {
-	var facetValues = [];
-	var facetValue = {};
-	for(var i = 0 ; facetResponse != null && i < facetResponse.length ; i++)
-	{
-		if(i % 2 == 0)
-		{
-			facetValue.label = facetResponse[i];
-		}
-		else
-		{
-			facetValue.count = facetResponse[i];
-			facetValues.push(facetValue);
-			facetValue = {};
-		}
-	}
-	return facetValues;
-};
-
-function buildPieChartFromFacetValues (facetValues) {
-	var values = [];
-	var labels = [];
-	
-	for(var i = 0 ; facetValues != null && i < 6 && i < facetValues.length ; i++)
-	{
-		var facetValue = facetValues[i];
-		if(facetValue.label != null && facetValue.count > 0)
-		{
-			values.push(facetValue.count);
-			labels.push(facetValue.label);
-		}
-	}
-	return {"labels": labels, "values": values};
-}
-
 function getQueryParams(queryParams) {
 	queryParams = queryParams.split("+").join(" ");
 
