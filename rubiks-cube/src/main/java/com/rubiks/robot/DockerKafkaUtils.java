@@ -6,7 +6,10 @@ public class DockerKafkaUtils {
 
 	public static String retrieveKafkaHostname() {
 		String osName = System.getProperty("os.name");
-		if(StringUtils.isNotEmpty(osName) && osName.equalsIgnoreCase("Windows 7"))
+		if(StringUtils.isNotEmpty(System.getenv().get("KAFKA_BROKER_HOST"))) {
+			return System.getenv().get("KAFKA_BROKER_HOST");
+		}
+		else if(StringUtils.isNotEmpty(osName) && osName.equalsIgnoreCase("Windows 7"))
 			return "192.168.71.131"; // DEV Config
 		return "127.0.0.1";
 	}

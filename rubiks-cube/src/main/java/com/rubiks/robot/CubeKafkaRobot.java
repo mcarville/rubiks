@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -155,6 +156,7 @@ public class CubeKafkaRobot implements Runnable {
 		producer.close();
 	}
 
+	private static String DOCKER_ALIAS;
 	
 	private static CubeTaskReport buildCubeTaskReport(boolean onError) {
 		
@@ -164,8 +166,16 @@ public class CubeKafkaRobot implements Runnable {
 		}
 		catch(UnknownHostException exception) {}
 		
+		String dockerAlias = System.getenv().get("DOCKER_ALIAS");
+		if(StringUtils.isEmpty(dockerAlias)) {
+			if(StringUtils.isEmpty(DOCKER_ALIAS))
+				DOCKER_ALIAS = UUID.randomUUID().toString().substring(0, 7);
+			
+			dockerAlias = DOCKER_ALIAS;
+		}
+		
 		return new CubeTaskReport(onError,
-				ManagementFactory.getRuntimeMXBean().getName(), hostname, System.getenv().get("DOCKER_ALIAS"));
+				ManagementFactory.getRuntimeMXBean().getName(), hostname, dockerAlias);
 	}
 	
 }
