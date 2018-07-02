@@ -15,6 +15,7 @@ PIDS=""
 
 while [ -z "$PIDS" ]
 do
+	echo "Waiting for ZK to start"
 	sleep 1s
 	PIDS=$(ps ax | grep java | grep -i QuorumPeerMain | grep -v grep | awk '{print $1}')
 done
@@ -22,6 +23,16 @@ done
 bin/kafka-server-start.sh -daemon config/server.properties $OVERRIDE
 
 # re-create topics
+
+# wait for kafka to start
+PIDS=""
+
+while [ -z "$PIDS" ]
+do
+	echo "Waiting for Kafka to start"
+	sleep 1s
+	PIDS=$(ps ax | grep -i 'kafka\.Kafka' | grep java | grep -v grep | awk '{print $1}')
+done
 
 for var in "sandbox" "request" "response"
 do
