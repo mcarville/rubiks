@@ -73,9 +73,14 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 			String queryId = UUID.randomUUID().toString();
 			CubeKafkaRobot.writeMessageToQueue("request", queryId, cubeKafkaMessage.toJSON().toString(), new TestWriteCallback());
 			
-			Thread.sleep(1000);
-			
 			Map<String, String> responseMap = testRobotResponseConsumer.getResponseFromKafkaMap();
+			
+			for(int j = 0 ; j < 30 ; j++) {
+				if(responseMap.get(queryId) != null)
+					break;
+					
+				Thread.sleep(1000);
+			}
 			
 			assertFalse(responseMap.isEmpty());
 			String responseJSON = responseMap.get(queryId);
