@@ -19,7 +19,7 @@ public class DockerKafkaUtils {
 	
 	public static String buildBrokerServersConnectionString () {
 		String kafkaBrokerServers = String.format("%s:%s", retrieveKafkaHostname(), "9092");
-		LOGGER.info(String.format("kafkaBrokerServers: %s", kafkaBrokerServers));
+		LOGGER.debug(String.format("kafkaBrokerServers: %s", kafkaBrokerServers));
 		return kafkaBrokerServers;
 	}
 }

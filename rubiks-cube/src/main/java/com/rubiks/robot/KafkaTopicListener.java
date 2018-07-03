@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 public abstract class KafkaTopicListener implements Runnable {
 	
 	protected Logger logger = Logger.getLogger(getClass());
+	protected static Logger LOGGER = Logger.getLogger(KafkaTopicListener.class);
 	
 	protected boolean isRunning = true;
 	protected boolean isListening = false;
@@ -42,7 +43,7 @@ public abstract class KafkaTopicListener implements Runnable {
 		while( ! isListening()) {
 			if(i > maxWaitingIterations)
 				throw new IllegalStateException(String.format("TestRobotResponseConsumer has waited for %s iterations and it is still not ready", i));
-			Thread.sleep(1000);
+			Thread.sleep(50);
 			i++;
 		}
 		logger.debug(String.format("testRobotResponseConsumer.isListening: %s", isListening()));
@@ -73,5 +74,13 @@ public abstract class KafkaTopicListener implements Runnable {
 			responseFromKafkaMap.put(key.toString(), responseFromKafkaCache.get(key).getObjectValue().toString());
 		}
 		return responseFromKafkaMap;
+	}
+	
+	public static void tryToSleep(long timeMs){
+		try {
+			Thread.sleep(timeMs);
+		} catch (InterruptedException e) {
+			LOGGER.error(e.toString(), e);
+		}
 	}
 }

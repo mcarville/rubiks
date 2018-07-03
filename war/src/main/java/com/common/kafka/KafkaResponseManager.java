@@ -108,7 +108,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 					}
 					else {
 						logger.debug("No jsonObject found => Going to sleep");
-						Thread.sleep(500);
+						KafkaTopicListener.tryToSleep(50);
 					}
 				}
 				throw new IllegalStateException(String.format("Can not get a jsonObject after waiting for %s ms", (System.currentTimeMillis() - waitStart)));
@@ -147,6 +147,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 				}
 			}
 			consumer.commitSync();
+			KafkaTopicListener.tryToSleep(50);
 		}
 		
 		producer.close();

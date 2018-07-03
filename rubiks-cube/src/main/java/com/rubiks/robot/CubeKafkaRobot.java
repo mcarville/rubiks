@@ -107,6 +107,7 @@ public class CubeKafkaRobot implements Runnable {
 				}
 			}
 			consumer.commitAsync();
+			KafkaTopicListener.tryToSleep(50);
 		}
 		
 		consumer.close();
