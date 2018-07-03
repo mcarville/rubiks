@@ -1,9 +1,12 @@
 package com.rubiks.robot;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 public class DockerKafkaUtils {
 
+	protected static Logger LOGGER = Logger.getLogger(DockerKafkaUtils.class);
+	
 	public static String retrieveKafkaHostname() {
 		String osName = System.getProperty("os.name");
 		if(StringUtils.isNotEmpty(System.getenv().get("KAFKA_BROKER_HOST"))) {
@@ -15,6 +18,8 @@ public class DockerKafkaUtils {
 	}
 	
 	public static String buildBrokerServersConnectionString () {
-		return String.format("%s:%s", retrieveKafkaHostname(), "9092");
+		String kafkaBrokerServers = String.format("%s:%s", retrieveKafkaHostname(), "9092");
+		LOGGER.info(String.format("kafkaBrokerServers: %s", kafkaBrokerServers));
+		return kafkaBrokerServers;
 	}
 }

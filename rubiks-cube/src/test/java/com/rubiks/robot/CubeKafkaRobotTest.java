@@ -1,8 +1,10 @@
 package com.rubiks.robot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -10,7 +12,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.codehaus.jettison.json.JSONException;
 
+import com.rubiks.objects.Cube;
+import com.rubiks.objects.CubeFactory;
+import com.rubiks.objects.CubeMagicMove;
+import com.rubiks.objects.CubeMove;
 import com.rubiks.utils.DockerKafkaTest;
 import com.rubiks.utils.TestWriteCallback;
 import com.rubiks.utils.TestWriteRequesterRobot;
@@ -36,6 +43,50 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 		}
 		consumer.close();
 	}
+	
+	public void testProduceAndConsumeOne() throws JSONException, InterruptedException, IOException {
+	
+		executeProduceAndConsumeTest(1);
+	}
+
+	public void testProduceAndConsumeTen() throws JSONException, InterruptedException, IOException {
+		
+		executeProduceAndConsumeTest(10);
+	}
+	
+	protected void executeProduceAndConsumeTest(int queryNumber) throws InterruptedException,JSONException, IOException {
+		ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(2);
+		
+		List<CubeKafkaRobot> cubeKafkaRobots = startCubeKafkaRobots(threadPoolExecutor, 1);
+		
+		TestRobotResponseConsumer testRobotResponseConsumer = new TestRobotResponseConsumer();
+		threadPoolExecutor.submit(testRobotResponseConsumer);
+		testRobotResponseConsumer.waitForListening();
+		
+		Cube cube = CubeFactory.createCube(); 
+
+		for(int i = 0 ; i < queryNumber ; i++) {
+			CubeMove cubeMove = CubeMagicMove.retrieveRamdomMove();
+			
+			CubeKafkaMessage cubeKafkaMessage = new CubeKafkaMessage(cube, cubeMove);
+			
+			String queryId = UUID.randomUUID().toString();
+			CubeKafkaRobot.writeMessageToQueue("request", queryId, cubeKafkaMessage.toJSON().toString(), new TestWriteCallback());
+			
+			Thread.sleep(1000);
+			
+			Map<String, String> responseMap = testRobotResponseConsumer.getResponseFromKafkaMap();
+			
+			assertFalse(responseMap.isEmpty());
+			String responseJSON = responseMap.get(queryId);
+			assertNotNull(responseJSON);
+			
+			cube.executeMove(cubeMove);
+			
+			assertEquals(CubeKafkaMessage.fromJSON(responseJSON, CubeKafkaMessage.class).getCube(), cube);
+		}
+	}
+	
 	
 	public void testConsumeAndProduceSingleRobot() throws InterruptedException {
 		

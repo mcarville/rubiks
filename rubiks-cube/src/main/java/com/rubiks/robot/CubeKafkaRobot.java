@@ -38,8 +38,9 @@ public class CubeKafkaRobot implements Runnable {
     private final static String BOOTSTRAP_SERVERS = DockerKafkaUtils.buildBrokerServersConnectionString();
 
     private static Properties DEFAULT_CONSUMER_PROPERTIES;
-    private static Properties producerProperties;
-
+    private static Properties PRODUCER_PROPERTIES;
+    private static KafkaProducer<String, String> PRODUCER;
+    
     static {
     	
 		DEFAULT_CONSUMER_PROPERTIES = new Properties();
@@ -48,12 +49,14 @@ public class CubeKafkaRobot implements Runnable {
 		DEFAULT_CONSUMER_PROPERTIES.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		DEFAULT_CONSUMER_PROPERTIES.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
     	
-        producerProperties = new Properties();
-        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        producerProperties.put(ProducerConfig.ACKS_CONFIG, "all");
-        producerProperties.put(ProducerConfig.RETRIES_CONFIG, 0);
-        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        PRODUCER_PROPERTIES = new Properties();
+        PRODUCER_PROPERTIES.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        PRODUCER_PROPERTIES.put(ProducerConfig.ACKS_CONFIG, "all");
+        PRODUCER_PROPERTIES.put(ProducerConfig.RETRIES_CONFIG, 0);
+        PRODUCER_PROPERTIES.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        PRODUCER_PROPERTIES.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        
+        PRODUCER = new KafkaProducer<String, String>(PRODUCER_PROPERTIES);
     }
 	
 	protected boolean isRunning = true;
@@ -130,7 +133,7 @@ public class CubeKafkaRobot implements Runnable {
 	
 	protected static Consumer<String, String> buildConsumer(Collection<String> topics, String groupId) {
 		
-		Properties consumerProperties = (Properties)DEFAULT_CONSUMER_PROPERTIES.clone();
+		Properties consumerProperties = (Properties) DEFAULT_CONSUMER_PROPERTIES.clone();
 		if(StringUtils.isNotEmpty(groupId))
 			consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
 		
@@ -144,16 +147,19 @@ public class CubeKafkaRobot implements Runnable {
 	}
 
 	public static void writeMessageToQueue(String topic, String queryId, String response, Callback callback) {
-		KafkaProducer<String, String> producer = new KafkaProducer<String, String>(producerProperties);
+		
+		if(PRODUCER == null)
+			throw new IllegalStateException("CubeKafkaRobot - PRODUCER can not be null");
+		
 		ProducerRecord<String, String> data = new ProducerRecord<String, String>(topic, queryId, response);
 		if(callback == null)
-			producer.send(data);
+			PRODUCER.send(data);
 		else
-			producer.send(data, callback);
+			PRODUCER.send(data, callback);
 		
 		LOGGER.debug(String.format("Write to topic: '%s' message: [%s => %s]", topic, queryId, response.length()));
 		
-		producer.close();
+		PRODUCER.flush();
 	}
 
 	private static String DOCKER_ALIAS;

@@ -1,6 +1,7 @@
 package com.common.kafka;
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,29 +13,50 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
 
+import com.rubiks.robot.CubeKafkaMessage;
 import com.rubiks.robot.DockerKafkaUtils;
 import com.rubiks.robot.KafkaTopicListener;
 
 public class KafkaResponseManager extends KafkaTopicListener {
 
+	protected static Logger LOGGER = Logger.getLogger(KafkaResponseManager.class);
+	
 	private KafkaResponseManager(){}
 	private static KafkaResponseManager instance;
 	private static Object initLock = new Object();
 	
-	private final static String TOPIC = "response";
+	private final static String RESPONSE_TOPIC = "response";
+	private static final String REQUEST_TOPIC = "request";
+	
 	private final static String BOOTSTRAP_SERVERS = DockerKafkaUtils.buildBrokerServersConnectionString();
-	private static Properties properties;
+	private static Properties CONSUMER_PROPERTIES;
+	private static Properties PRODUCER_PROPERTIES;
 	
 	private ExecutorService executor;
+	private KafkaProducer<String, String> producer;
 	
 	static {
-		properties = new Properties();
-	    properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-		properties.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaConsumer");
-		properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		
+        PRODUCER_PROPERTIES = new Properties();
+        PRODUCER_PROPERTIES.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        PRODUCER_PROPERTIES.put(ProducerConfig.ACKS_CONFIG, "all");
+        PRODUCER_PROPERTIES.put(ProducerConfig.RETRIES_CONFIG, 0);
+        PRODUCER_PROPERTIES.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        PRODUCER_PROPERTIES.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+		
+		CONSUMER_PROPERTIES = new Properties();
+	    CONSUMER_PROPERTIES.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+		CONSUMER_PROPERTIES.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaConsumer");
+		CONSUMER_PROPERTIES.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		CONSUMER_PROPERTIES.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 	}
 	
 	public static KafkaResponseManager getInstance() throws InterruptedException {
@@ -52,13 +74,25 @@ public class KafkaResponseManager extends KafkaTopicListener {
 				kafkaResponseManager.executor = Executors.newFixedThreadPool(10);
 				
 				instance = kafkaResponseManager;
+				
+				LOGGER.info("KafkaResponseManager is instanciated");
 			}
 		}
 		return instance;
 	}
 
-	public Future<String> retrieveKafkaResponse(final String queryId) throws InterruptedException {
+	public Future<String> retrieveKafkaResponse(final CubeKafkaMessage cubeKafkaMessage) throws InterruptedException, JSONException {
 
+		final String queryId = UUID.randomUUID().toString();
+		
+		ProducerRecord<String, String> data = new ProducerRecord<String, String>(REQUEST_TOPIC, queryId, cubeKafkaMessage.toJSON().toString());
+		
+		if(producer == null)
+			throw new IllegalStateException("KafkaResponseManager - producer can not be null");
+		
+		producer.send(data);	
+		producer.flush();
+		
 		Callable<String> callable = new Callable<String>() {
 			@Override
 			public String call() throws Exception {
@@ -93,8 +127,10 @@ public class KafkaResponseManager extends KafkaTopicListener {
 	@Override
 	public void run() {
 		
-		Consumer<String, String> consumer = new KafkaConsumer<>(properties);
-		consumer.subscribe(Pattern.compile(TOPIC));
+		producer = new KafkaProducer<String, String>(PRODUCER_PROPERTIES);
+		
+		Consumer<String, String> consumer = new KafkaConsumer<>(CONSUMER_PROPERTIES);
+		consumer.subscribe(Pattern.compile(RESPONSE_TOPIC));
 		
 		while(isRunning) {
 			ConsumerRecords<String, String> records = consumer.poll(1000);
@@ -102,7 +138,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 			isListening = true;
 			
 			if(! records.isEmpty()) {
-				for(ConsumerRecord<String, String> record : records.records(TOPIC)) {
+				for(ConsumerRecord<String, String> record : records.records(RESPONSE_TOPIC)) {
 					
 					logger.debug(String.format("Record received with key: %s", record.key()));
 					
@@ -110,9 +146,10 @@ public class KafkaResponseManager extends KafkaTopicListener {
 					putKafkaReponse(record.key(), record.value());
 				}
 			}
-			consumer.commitAsync();
+			consumer.commitSync();
 		}
 		
+		producer.close();
 		consumer.close();
 	}
 	
