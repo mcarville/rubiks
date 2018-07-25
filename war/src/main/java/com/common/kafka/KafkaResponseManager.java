@@ -147,7 +147,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 				}
 			}
 			consumer.commitSync();
-			KafkaTopicListener.tryToSleep(50);
+			KafkaTopicListener.tryToSleep(5);
 		}
 		
 		producer.close();
