@@ -172,7 +172,7 @@ public class CubeMagicMove {
 		for(int i = 0 ; i < moveCount; i++) {
 
 			CubeMove cubeMove = retrieveRamdomMove();
-			cube.executeMove(cubeMove);
+			new CubeMoveHandler().executeMove(cube, cubeMove);
 		}
 	}
 	
@@ -193,7 +193,7 @@ public class CubeMagicMove {
 		JSONArray jsonArray = new JSONArray(jsonContent);
 		for(int i = 0 ; i < jsonArray.length() ; i++) {
 			CubeMove cubeMove = CubeMove.fromJSON(jsonArray.getString(i), CubeMove.class);
-			cube.executeMove(cubeMove);
+			new CubeMoveHandler().executeMove(cube, cubeMove);
 		}
 	}
 }

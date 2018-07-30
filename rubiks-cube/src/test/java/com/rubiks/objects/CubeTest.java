@@ -16,7 +16,7 @@ public class CubeTest extends TestCase {
 		assertEquals(copyCube, cube);
 		
 		CubeMove cubeMove = new CubeMove(null, null, null, CubeMagicMove.REFERENCE_CUBE_MIX);		
-		cube.executeMove(cubeMove);
+		new CubeMoveHandler().executeMove(cube, cubeMove);
 		copyCube = Cube.fromJSON(cube.toJSON().toString(), Cube.class);
 		
 		cube.toCubeFaces();

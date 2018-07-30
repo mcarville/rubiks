@@ -1,0 +1,29 @@
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>rubiks-cube-message</artifactId>
+  <name>Rubiks Cube Message</name>
+  <description></description>
+
+	<parent>
+		<groupId>com.rubiks</groupId>
+		<artifactId>rubiks</artifactId>
+		<version>IF.2016.3-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.rubiks</groupId>
+			<artifactId>rubiks-cube-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>
+
+
+
+
+
+
+

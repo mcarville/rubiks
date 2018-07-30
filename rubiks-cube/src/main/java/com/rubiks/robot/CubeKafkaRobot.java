@@ -28,8 +28,9 @@ import org.codehaus.jettison.json.JSONException;
 import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeAnalysis;
 import com.rubiks.objects.CubeMove;
+import com.rubiks.objects.CubeMoveHandler;
 
-public class CubeKafkaRobot implements Runnable {
+public class CubeKafkaRobot extends KafkaTopicListener {
 
 	// com.rubiks.robot.CubeKafkaRobot
 	
@@ -59,8 +60,6 @@ public class CubeKafkaRobot implements Runnable {
         PRODUCER = new KafkaProducer<String, String>(PRODUCER_PROPERTIES);
     }
 	
-	protected boolean isRunning = true;
-	
 	@Override
 	public void run() {
 		List<String> topics = Arrays.asList("request".split(","));
@@ -70,6 +69,8 @@ public class CubeKafkaRobot implements Runnable {
 			
 			ConsumerRecords<String, String> records = consumer.poll(1000);
 
+			isListening = true;
+			
 			if(! records.isEmpty()) {
 				for(ConsumerRecord<String, String> record : records.records("request")) {
 					
@@ -84,7 +85,7 @@ public class CubeKafkaRobot implements Runnable {
 						Cube cube = cubeKafkaMessage.getCube();
 						CubeMove cubeMove = cubeKafkaMessage.getCubeMove();
 						
-						cube.executeMove(cubeMove);
+						new CubeMoveHandler().executeMove(cube, cubeMove);
 						cube.setCubeAnalysis(CubeAnalysis.buildCubeAnalysis(cube));
 						
 						LOGGER.debug(String.format("Put response: %s to queue", queryId));
@@ -116,6 +117,8 @@ public class CubeKafkaRobot implements Runnable {
 	public void stop() {
 		isRunning = false;
 	}
+	
+
 	
 	public static void main (String[] args) {
 		CubeKafkaRobot cubeKafkaRobot = new CubeKafkaRobot();

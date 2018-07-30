@@ -14,7 +14,7 @@ public class CubeMoveTest extends TestCase {
 		
 		CubeMove cubeMove = new CubeMove(null, null, null, CubeMagicMove.REFERENCE_CUBE_MIX);
 		
-		cube.executeMove(cubeMove);
+		new CubeMoveHandler().executeMove(cube, cubeMove);
 		
 		assertFalse(cube.getCubeAnalysis().isFrontCrossDone());
 		assertFalse(cube.getCubeAnalysis().isFirstFloorDone());

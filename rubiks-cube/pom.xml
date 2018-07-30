@@ -32,50 +32,14 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
+			<groupId>com.rubiks</groupId>
+			<artifactId>rubiks-cube-common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.codehaus.jettison</groupId>
-		    <artifactId>jettison</artifactId>
-		    <version>1.3.8</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>${apache-commons-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${apache-commons-version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.kafka</groupId>
-		    <artifactId>kafka_2.11</artifactId>
-		    <version>1.1.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.google.code.gson</groupId>
-		    <artifactId>gson</artifactId>
-		    <version>2.8.4</version>
-		</dependency>
-		<dependency>
-		    <groupId>net.sf.ehcache</groupId>
-		    <artifactId>ehcache</artifactId>
-		    <version>2.10.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.github.docker-java</groupId>
-		    <artifactId>docker-java</artifactId>
-		    <version>3.0.14</version>
+			<groupId>com.rubiks</groupId>
+			<artifactId>rubiks-cube-message</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

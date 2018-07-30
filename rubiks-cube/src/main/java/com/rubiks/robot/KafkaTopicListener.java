@@ -9,6 +9,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 public abstract class KafkaTopicListener implements Runnable {
@@ -19,7 +20,7 @@ public abstract class KafkaTopicListener implements Runnable {
 	protected boolean isRunning = true;
 	protected boolean isListening = false;
 
-	protected final Cache responseFromKafkaCache;
+	protected final CacheManager cacheManager;
 	protected final String cacheName;
 	
 	
@@ -27,11 +28,10 @@ public abstract class KafkaTopicListener implements Runnable {
 
 		cacheName = String.format("%s_%s", "responseFromKafkaCache", UUID.randomUUID().toString());
 		
-		CacheManager cm = CacheManager.getInstance();
-		cm.addCache(cacheName);
-		responseFromKafkaCache = cm.getCache(cacheName);
+		cacheManager = CacheManager.getInstance();
+		cacheManager.addCache(cacheName);
 		
-		CacheConfiguration config = responseFromKafkaCache.getCacheConfiguration();
+		CacheConfiguration config = cacheManager.getCache(cacheName).getCacheConfiguration();
 		config.setTimeToIdleSeconds(60);
 		config.setTimeToLiveSeconds(120);
 		config.setMaxEntriesLocalHeap(5000l);
@@ -43,7 +43,7 @@ public abstract class KafkaTopicListener implements Runnable {
 		while( ! isListening()) {
 			if(i > maxWaitingIterations)
 				throw new IllegalStateException(String.format("TestRobotResponseConsumer has waited for %s iterations and it is still not ready", i));
-			Thread.sleep(50);
+			Thread.sleep(1000);
 			i++;
 		}
 		logger.debug(String.format("testRobotResponseConsumer.isListening: %s", isListening()));
@@ -59,19 +59,20 @@ public abstract class KafkaTopicListener implements Runnable {
 	}
 	
 	protected void putKafkaReponse(String key, String value) {
-		responseFromKafkaCache.put(new Element(key, value));
+		cacheManager.getCache(cacheName).put(new Element(key, value));
 	}
 	
 	protected String getKafkaReponse(String key) {
-		Element element = responseFromKafkaCache.get(key);
+		Element element = cacheManager.getCache(cacheName).get(key);
 		return (element != null && element.getObjectValue() != null
-				? element.getObjectValue().toString() : null);
+				? StringUtils.isNotEmpty(element.getObjectValue().toString())
+				? element.getObjectValue().toString() : null : null);
 	}
 	
 	protected Map<String, String> getResponseFromKafkaMap() {
 		Map<String, String> responseFromKafkaMap = new ConcurrentHashMap<String, String>();
-		for(Object key : responseFromKafkaCache.getKeys()) {
-			responseFromKafkaMap.put(key.toString(), responseFromKafkaCache.get(key).getObjectValue().toString());
+		for(Object key : cacheManager.getCache(cacheName).getKeys()) {
+			responseFromKafkaMap.put(key.toString(), cacheManager.getCache(cacheName).get(key).getObjectValue().toString());
 		}
 		return responseFromKafkaMap;
 	}

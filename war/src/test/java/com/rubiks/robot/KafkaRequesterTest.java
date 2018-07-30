@@ -11,11 +11,13 @@ import java.util.concurrent.TimeoutException;
 import org.codehaus.jettison.json.JSONException;
 
 import com.common.kafka.KafkaRequester;
+import com.common.kafka.KafkaResponseManager;
 import com.rubiks.objects.Cube;
 import com.rubiks.objects.Cube.AXE;
 import com.rubiks.objects.CubeFactory;
 import com.rubiks.objects.CubeMagicMove;
 import com.rubiks.objects.CubeMove;
+import com.rubiks.objects.CubeMoveHandler;
 import com.rubiks.utils.DockerKafkaTest;
 
 
@@ -65,7 +67,7 @@ public class KafkaRequesterTest extends DockerKafkaTest {
 			
 			Cube fromRobotCube = cubeKafkaMessage.getCube();
 
-			startCube.executeMove(cubeMove);
+			new CubeMoveHandler().executeMove(startCube, cubeMove);
 
 //			assertEquals(startCube.getCubeAnalysis(), fromRobotCube.getCubeAnalysis());
 //			TODO: analyse why this is not working
@@ -98,9 +100,15 @@ public class KafkaRequesterTest extends DockerKafkaTest {
 		stopCubeKafkaRobots(cubeKafkaRobots);
 	}
 
-	private List<CubeKafkaRobot>  startCubeRobots(int cubeKafkaRobotNumber) {
+	private List<CubeKafkaRobot>  startCubeRobots(int cubeKafkaRobotNumber) throws InterruptedException {
 		ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1 + cubeKafkaRobotNumber);
-		return startCubeKafkaRobots(threadPoolExecutor, cubeKafkaRobotNumber);
+		List<CubeKafkaRobot> cubeKafkaRobots = startCubeKafkaRobots(threadPoolExecutor, cubeKafkaRobotNumber);
+		
+		for(CubeKafkaRobot cubeKafkaRobot : cubeKafkaRobots) {
+			cubeKafkaRobot.waitForListening();
+		}
+		
+		return cubeKafkaRobots;
 	}
 	
 }

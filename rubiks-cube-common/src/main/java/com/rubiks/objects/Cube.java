@@ -1,13 +1,11 @@
 package com.rubiks.objects;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -228,13 +226,6 @@ public class Cube extends AbstractJSONSerialiazer {
 		}
 		
 		return jsonArray;
-	}
-
-	public void executeMove(CubeMove cubeMove) throws IOException, JSONException {
-		if(StringUtils.isNotEmpty(cubeMove.getMagicMove()))
-			new CubeMagicMove().executeMagicMode(cubeMove.getMagicMove(), this);
-		if(StringUtils.isNotEmpty(cubeMove.getAxe()))
-			this.move(cubeMove.getAxe(), cubeMove.getLevel(), cubeMove.getDirection());
 	}
 
 	@Override

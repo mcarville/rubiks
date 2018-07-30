@@ -31,6 +31,7 @@ public class RestAPIServlet extends AbstractJsonServlet {
 			avaliableCommand.initialize();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void handleRequest(HttpServletRequest request, JSONObject jsonResponse) throws Exception {
 		String commandParamValue = retrieveParamValue(request, "command", true);
 		

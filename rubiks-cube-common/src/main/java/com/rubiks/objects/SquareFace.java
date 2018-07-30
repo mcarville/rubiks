@@ -3,8 +3,6 @@ package com.rubiks.objects;
 import java.util.Arrays;
 import java.util.List;
 
-import com.rubiks.objects.Cube.AXE;
-
 public class SquareFace {
 
 	public static final String RED = "red";

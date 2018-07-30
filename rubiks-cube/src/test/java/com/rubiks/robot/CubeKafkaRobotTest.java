@@ -18,6 +18,7 @@ import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeFactory;
 import com.rubiks.objects.CubeMagicMove;
 import com.rubiks.objects.CubeMove;
+import com.rubiks.objects.CubeMoveHandler;
 import com.rubiks.utils.DockerKafkaTest;
 import com.rubiks.utils.TestWriteCallback;
 import com.rubiks.utils.TestWriteRequesterRobot;
@@ -86,7 +87,7 @@ public class CubeKafkaRobotTest extends DockerKafkaTest {
 			String responseJSON = responseMap.get(queryId);
 			assertNotNull(responseJSON);
 			
-			cube.executeMove(cubeMove);
+			new CubeMoveHandler().executeMove(cube, cubeMove);
 			
 			assertEquals(CubeKafkaMessage.fromJSON(responseJSON, CubeKafkaMessage.class).getCube(), cube);
 		}

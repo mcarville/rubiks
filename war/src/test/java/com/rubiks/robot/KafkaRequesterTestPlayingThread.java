@@ -5,6 +5,7 @@ import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeFactory;
 import com.rubiks.objects.CubeMagicMove;
 import com.rubiks.objects.CubeMove;
+import com.rubiks.objects.CubeMoveHandler;
 import com.rubiks.utils.TestWriteRequesterRobot;
 
 public class KafkaRequesterTestPlayingThread extends TestWriteRequesterRobot {
@@ -27,7 +28,7 @@ public class KafkaRequesterTestPlayingThread extends TestWriteRequesterRobot {
 			
 				cubeKafkaMessage = kafkaRequester.executeQuery(cube, cubeMove);
 				
-				cube.executeMove(cubeMove);
+				new CubeMoveHandler().executeMove(cube, cubeMove);
 				
 				if( ! cube.equals(cubeKafkaMessage.getCube())) {
 					

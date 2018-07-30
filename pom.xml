@@ -33,6 +33,8 @@
 	</properties>
 
 	<modules>
+		<module>rubiks-cube-common</module>
+		<module>rubiks-cube-message</module>
 		<module>rubiks-cube</module>
 		<module>rubiks-cube-robot</module>
 		<module>war</module>

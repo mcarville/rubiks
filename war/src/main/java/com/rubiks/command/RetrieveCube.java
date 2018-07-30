@@ -13,6 +13,7 @@ import com.rubiks.objects.Cube;
 import com.rubiks.objects.CubeAnalysis;
 import com.rubiks.objects.CubeFactory;
 import com.rubiks.objects.CubeMove;
+import com.rubiks.objects.CubeMoveHandler;
 import com.rubiks.robot.CubeKafkaMessage;
 
 public class RetrieveCube extends AbstractCommand {
@@ -46,7 +47,7 @@ public class RetrieveCube extends AbstractCommand {
 		CubeMove cubeMove = new CubeMove(axe, level, direction, magicMove);
 		
 		if(StringUtils.isEmpty(highAvailabilityMode)) {
-			cube.executeMove(cubeMove);
+			new CubeMoveHandler().executeMove(cube, cubeMove);
 			cube.setCubeAnalysis(CubeAnalysis.buildCubeAnalysis(cube));
 		}
 		else {
