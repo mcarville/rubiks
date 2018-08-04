@@ -23,6 +23,7 @@ import org.codehaus.jettison.json.JSONException;
 
 import com.rubiks.robot.CubeKafkaMessage;
 import com.rubiks.robot.DockerKafkaUtils;
+import com.rubiks.robot.KafkaMessageCommons;
 import com.rubiks.robot.KafkaTopicListener;
 
 public class KafkaResponseManager extends KafkaTopicListener {
@@ -54,7 +55,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 		
 		CONSUMER_PROPERTIES = new Properties();
 	    CONSUMER_PROPERTIES.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-		CONSUMER_PROPERTIES.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaConsumer");
+		CONSUMER_PROPERTIES.put(ConsumerConfig.GROUP_ID_CONFIG, GUIKafkaClient.GUI_KAFKA_CLIENT_UUID);
 		CONSUMER_PROPERTIES.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		CONSUMER_PROPERTIES.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 	}
@@ -86,6 +87,7 @@ public class KafkaResponseManager extends KafkaTopicListener {
 		final String queryId = UUID.randomUUID().toString();
 		
 		ProducerRecord<String, String> data = new ProducerRecord<String, String>(REQUEST_TOPIC, queryId, cubeKafkaMessage.toJSON().toString());
+		KafkaMessageCommons.addCommonHeaders(data, GUIKafkaClient.GUI_KAFKA_CLIENT_UUID);
 		
 		if(producer == null)
 			throw new IllegalStateException("KafkaResponseManager - producer can not be null");
