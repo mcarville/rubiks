@@ -1,9 +1,13 @@
 
-FROM debian
+# FROM debian
 
-RUN apt-get update
+# RUN apt-get update
 
-RUN apt-get -y install openjdk-8-jdk
+# RUN apt-get -y install openjdk-8-jdk
+
+FROM alpine
+
+RUN apk --update add openjdk8
 
 RUN java -version
 
