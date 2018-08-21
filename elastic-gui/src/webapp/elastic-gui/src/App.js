@@ -23,7 +23,7 @@ class App extends Component {
 		? {"term" : filter}
 		: { "match_all": {} };
 	  
-	  fetch("logstash-2018.06.28/_search", {
+	  fetch("elasticsearch/logstash-2018.06.28/_search", {
 		  method: 'POST',
 		  headers: {
 			Accept: 'application/json',
