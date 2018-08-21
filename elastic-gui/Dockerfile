@@ -1,9 +1,9 @@
 
 FROM alpine
 
-RUN apk --update add openjdk8
+RUN apk --update add openjdk8-jre
 
-RUN apk --update add openjdk8 unzip wget
+RUN apk --update add unzip wget
 
 RUN java -version
 

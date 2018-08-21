@@ -7,7 +7,7 @@
 
 FROM alpine
 
-RUN apk --update add openjdk8
+RUN apk --update add openjdk8-jre
 
 RUN java -version
 

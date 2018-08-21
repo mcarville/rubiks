@@ -6,4 +6,6 @@ docker run --network="host" -itd  -e DOCKER_ALIAS=robot1 mcarville/sandbox:rubik
 
 docker run --network="host" -itd  -e DOCKER_ALIAS=robot2 mcarville/sandbox:rubiks-cube-robot
 
-docker run -itd --network="host"  mcarville/sandbox:rubiks.master.002b060
+docker run -itd --network="host"  mcarville/sandbox:rubiks.master
+
+docker run -itd --network="host"  mcarville/sandbox:elasticsearch-gui
