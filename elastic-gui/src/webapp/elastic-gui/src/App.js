@@ -4,6 +4,8 @@ import './App.css';
 
 class App extends Component {
 
+  filter = {};
+
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +18,7 @@ class App extends Component {
 
   loadElasticSearchResults() {
 	  
-	  var filter = this.state.filter;
+	  var filter = this.filter;
 	  var query = (this.isNotEmpty(filter)) 
 		? {"term" : filter}
 		: { "match_all": {} };
@@ -67,11 +69,11 @@ class App extends Component {
 	  console.log(aggregationKey + " => " + itemKey);
 	  
 	  var currentFilter = {};
-	  if(this.state.filter == null || this.state.filter[aggregationKey] != itemKey) {
+	  if(this.filter == null || this.filter[aggregationKey] !== itemKey) {
 		currentFilter[aggregationKey] = itemKey;
 	  }
 	  
-	  this.state.filter = currentFilter;
+	  this.filter = currentFilter;
 	  
 	  this.loadElasticSearchResults();
   }
@@ -102,7 +104,7 @@ class App extends Component {
 								</div>
 								<div>
 								{queryResponse.aggregations[aggregationKey].buckets.map((item,i) => (
-									<div key={item.key} style={{cursor: 'pointer', fontWeight: (this.state.filter[aggregationKey] == item.key) ? 'bold' : 'normal'}} onClick={(e) => this.filterOnAggregation(aggregationKey, item.key)} >
+									<div key={item.key} style={{cursor: 'pointer', fontWeight: (this.filter[aggregationKey] === item.key) ? 'bold' : 'normal'}} onClick={(e) => this.filterOnAggregation(aggregationKey, item.key)} >
 										{item.key} ({item.doc_count})
 									</div>
 								))}
