@@ -38,6 +38,7 @@
 		<module>rubiks-cube</module>
 		<module>rubiks-cube-robot</module>
 		<module>war</module>
+		<module>elastic-gui</module>
 	</modules>
 
 	<build>
