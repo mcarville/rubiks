@@ -50,8 +50,6 @@
 							<executable>npm</executable>
 							<arguments>
 								<argument>run</argument>
-							</arguments>
-							<arguments>
 								<argument>build</argument>
 							</arguments>
 						</configuration>
@@ -61,8 +59,30 @@
 					</execution>
 				</executions>
 			</plugin>
-        </plugins>
-    </build>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+				  <execution>
+					<id>copy-resources</id>
+					<phase>prepare-package</phase>
+					<goals>
+					  <goal>copy-resources</goal>
+					</goals>
+					<configuration>
+					  <outputDirectory>${basedir}/target/classes/public</outputDirectory>
+					  <resources>          
+						<resource>
+						  <directory>src/webapp/elastic-gui/build</directory>
+						  <filtering>true</filtering>
+						</resource>
+					  </resources>              
+					</configuration>            
+				  </execution>
+				</executions>
+			  </plugin>
+			</plugins>
+		</build>
     
     <dependencies>
         <dependency>
