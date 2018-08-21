@@ -2,3 +2,4 @@
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 docker push mcarville/sandbox:$DOCKER_TAG_NAME
 docker push mcarville/sandbox:rubiks-cube-robot
+docker push mcarville/sandbox:elasticsearch-gui
