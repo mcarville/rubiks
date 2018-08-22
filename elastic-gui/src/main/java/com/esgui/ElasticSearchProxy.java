@@ -3,8 +3,11 @@ package com.esgui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map.Entry;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
@@ -39,7 +43,18 @@ public class ElasticSearchProxy {
 	
 	private static final String ELASTIC_SEARCH_PORT = "elasticSearchPort";
 	
-
+	private HttpClient httpClient;
+	
+	
+	@PostConstruct
+	public void initialize () {
+		int downloadThreadNumber = 100;
+		PoolingHttpClientConnectionManager httpConnectionManager = new PoolingHttpClientConnectionManager();
+		httpConnectionManager.setDefaultMaxPerRoute(downloadThreadNumber);
+		httpConnectionManager.setMaxTotal(downloadThreadNumber * 2);
+		httpClient = HttpClients.custom().setConnectionManager(httpConnectionManager).disableCookieManagement().build();
+	}
+	
 	protected String buildElasticSearchUrl(String index, String requestHandler) {
 		
 		String protocol = StringUtils.isNotEmpty(System.getenv(ELASTIC_SEARCH_PROTOCOL)) ? System.getenv(ELASTIC_SEARCH_PROTOCOL) : ELASTIC_SEARCH_PROTOCOL_DEFAULT;
@@ -53,13 +68,31 @@ public class ElasticSearchProxy {
 	public StreamingResponseBody index(
 			@PathVariable("index") String index,
 			@PathVariable("requestHandler") String requestHandler,
-			@RequestHeader MultiValueMap<String,String> requestHeaders, @RequestBody String requestBody) throws ClientProtocolException,
-			IOException {
-
-		HttpClient httpClient = HttpClients.createDefault();
+			@RequestHeader MultiValueMap<String,String> requestHeaders, @RequestBody String requestBody) throws ClientProtocolException, IOException {
 
 		String esUrl = buildElasticSearchUrl(index, requestHandler);
-		HttpPost httpPost = new HttpPost(esUrl);
+		final HttpPost httpPost = buildHttpPostRequest(esUrl, requestHeaders, requestBody);
+
+		if(httpClient == null)
+			throw new IllegalStateException("httpClient can not be null");
+		
+		final HttpResponse httpResponse = httpClient.execute(httpPost);
+
+		if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.OK.value())
+			return new StreamingResponseBody() {
+				@Override
+				public void writeTo(OutputStream outputStream) throws IOException {
+					InputStream inputStream = httpResponse.getEntity().getContent();
+					IOUtils.copy(inputStream, outputStream);
+					IOUtils.closeQuietly(inputStream);
+					httpPost.releaseConnection();
+				}
+			};
+		throw new IllegalStateException(String.format("Not expected http status '%s' from %s", httpResponse.getStatusLine().getStatusCode(), esUrl));
+	}
+
+	protected HttpPost buildHttpPostRequest(String esUrl, MultiValueMap<String, String> requestHeaders, String requestBody) throws UnsupportedEncodingException {
+		final HttpPost httpPost = new HttpPost(esUrl);
 		
 		if(requestHeaders != null) {
 			for(Entry<String, List<String>> header : requestHeaders.entrySet()) {
@@ -73,20 +106,6 @@ public class ElasticSearchProxy {
 		
 		if (StringUtils.isNotEmpty(requestBody))
 			httpPost.setEntity(new StringEntity(requestBody));
-
-		final HttpResponse httpResponse = httpClient.execute(httpPost);
-
-		if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.OK.value())
-			return new StreamingResponseBody() {
-				@Override
-				public void writeTo(OutputStream outputStream) throws IOException {
-					InputStream inputStream = httpResponse.getEntity().getContent();
-					IOUtils.copy(inputStream, outputStream);
-					IOUtils.closeQuietly(inputStream);
-				}
-			};
-		throw new IllegalStateException(String.format("Not expected http status '%s' from %s", httpResponse.getStatusLine().getStatusCode(), esUrl));
+		return httpPost;
 	}
-
-
 }

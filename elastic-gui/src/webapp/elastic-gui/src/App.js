@@ -117,7 +117,7 @@ class App extends Component {
 					)}
 				</div>
 				<div style={{float: 'left', width: '70%'}}>
-					{(this.isNotEmpty (queryResponse.hits.hits) ) ? (
+					{(this.isNotEmpty (queryResponse.hits) && this.isNotEmpty (queryResponse.hits.hits) ) ? (
 						<div>
 							<div style={{overflow: 'auto', lineHeight: '40px', fontSize: '18px'}}>
 								<div style={{float: 'left', width: '30%'}}>{queryResponse.hits.total} </div>
