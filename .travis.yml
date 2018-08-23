@@ -13,7 +13,7 @@ deploy:
   file_glob: true
   on:
     branch: master
-after_success: docker build -t mcarville/sandbox:rubiks-gui ./war && docker build -t mcarville/sandbox:rubiks-cube-robot ./rubiks-cube-robot && docker build -t mcarville/sandbox:elasticsearch-gui ./elastic-gui && bash <(curl -s https://codecov.io/bash) -t a405876d-a14e-42d5-944e-71e8b8652d20
+after_success: bash docker_build && bash <(curl -s https://codecov.io/bash) -t a405876d-a14e-42d5-944e-71e8b8652d20
 deploy:
   provider: script
   script: bash docker_push

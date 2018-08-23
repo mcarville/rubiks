@@ -1,8 +1,7 @@
 #!/bin/bash
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker push mcarville/sandbox:rubiks-gui:latest
-docker push mcarville/sandbox:rubiks-gui:$GIT_VERSION_TAG
-docker push mcarville/sandbox:rubiks-cube-robot:latest
-docker push mcarville/sandbox:rubiks-cube-robot:$GIT_VERSION_TAG
-docker push mcarville/sandbox:elasticsearch-gui:latest
-docker push mcarville/sandbox:elasticsearch-gui:$GIT_VERSION_TAG
+for IMAGE_NAME in "war" "rubiks-cube-robot" "elastic-gui"
+do
+	docker push mcarville/sandbox:${IMAGE_NAME}.$GIT_VERSION_TAG
+	docker push mcarville/sandbox:${IMAGE_NAME}.latest
+done
