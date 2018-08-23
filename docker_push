@@ -1,5 +1,8 @@
 #!/bin/bash
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker push mcarville/sandbox:$DOCKER_TAG_NAME
-docker push mcarville/sandbox:rubiks-cube-robot
-docker push mcarville/sandbox:elasticsearch-gui
+docker push mcarville/sandbox:rubiks-gui:latest
+docker push mcarville/sandbox:rubiks-gui:$GIT_VERSION_TAG
+docker push mcarville/sandbox:rubiks-cube-robot:latest
+docker push mcarville/sandbox:rubiks-cube-robot:$GIT_VERSION_TAG
+docker push mcarville/sandbox:elasticsearch-gui:latest
+docker push mcarville/sandbox:elasticsearch-gui:$GIT_VERSION_TAG
