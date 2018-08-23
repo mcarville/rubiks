@@ -13,4 +13,6 @@ RUN java -version
 
 COPY ./target/rubiks-cube-robot-jar-with-dependencies.jar /opt/rubiks-cube/
 
+COPY ./VERSION .
+
 CMD ["java", "-jar", "/opt/rubiks-cube/rubiks-cube-robot-jar-with-dependencies.jar", "&"]

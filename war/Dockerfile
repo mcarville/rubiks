@@ -15,6 +15,8 @@ RUN java -version
 
 COPY ./target/rubiks-app.war /opt/tomcat/webapps/
 
+COPY ./VERSION .
+
 CMD ["/opt/tomcat/bin/catalina.sh", "run", "-d"]
 
 Expose 8080

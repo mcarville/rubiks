@@ -2,6 +2,7 @@
 for IMAGE_NAME in "war" "rubiks-cube-robot" "elastic-gui"
 do
   echo "${IMAGE_NAME} - version: ${GIT_VERSION_TAG}"
+	echo $GIT_VERSION_TAG > ./${IMAGE_NAME}/VERSION
 	docker build -t mcarville/sandbox:${IMAGE_NAME}.$GIT_VERSION_TAG ./${IMAGE_NAME}
 	docker tag mcarville/sandbox:${IMAGE_NAME}.$GIT_VERSION_TAG mcarville/sandbox:${IMAGE_NAME}.latest
 done
