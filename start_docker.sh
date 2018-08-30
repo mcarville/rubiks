@@ -8,4 +8,4 @@ docker run --network="host" -itd  -e DOCKER_ALIAS=robot2 mcarville/sandbox:rubik
 
 docker run -itd --network="host"  mcarville/sandbox:rubiks.master
 
-docker run -itd --network="host"  mcarville/sandbox:elasticsearch-gui
+docker run -itd --network="host" -e elasticSearchHostname='localhost'  mcarville/sandbox:elasticsearch-gui

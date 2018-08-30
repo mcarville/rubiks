@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import NumberFormat from 'react-number-format';
 
 class App extends Component {
 
-  filter = {};
+  aggregationLabels = {
+	  "userbrowser.keyword": "Browser",
+	  "geoip.city_name.keyword": "City",
+	  "geoip.country_code2.keyword": "Country code"
+  };
 
+  filter = {};
+  size = 15;
+  page = 0;
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -30,10 +39,12 @@ class App extends Component {
 			'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
+			"from": this.page * this.size, "size": this.size,
 			"query": query,
 			"aggs" : {
 				"userbrowser.keyword" : {"terms" : { "field" : "userbrowser.keyword" }},
-				"geoip.city_name.keyword" : {"terms" : { "field" : "geoip.city_name.keyword" }}
+				"geoip.city_name.keyword" : {"terms" : { "field" : "geoip.city_name.keyword" }},
+				"geoip.country_code2.keyword" : {"terms" : { "field" : "geoip.country_code2.keyword" }},
 			}
 		  })
 	  })
@@ -74,14 +85,20 @@ class App extends Component {
 	  }
 	  
 	  this.filter = currentFilter;
+	  this.page = 0;
 	  
+	  this.loadElasticSearchResults();
+  }
+  
+  goToPage = (page) => {
+	  this.page = page;
 	  this.loadElasticSearchResults();
   }
   
   render() {
     
 	var queryResponse = this.state.queryResponse;
-	
+
 	return (
       <div className="App">
         <header className="App-header">
@@ -93,22 +110,27 @@ class App extends Component {
         </p>
 		
 		{(this.isNotEmpty (queryResponse) ) ? (
-			<div style={{overflow: 'auto'}}>
-				<div style={{float: 'left', width: '30%'}}>
+			<div class="search-app " >
+			<div class="aggregations" >
 					{(this.isNotEmpty (queryResponse.aggregations) ) ? (
 						<div>
 							{Object.keys(queryResponse.aggregations).map((aggregationKey, bucket) => (
-								<div>
-								<div key={{aggregationKey}} style={{backgroundColor: '#ddd'}}>
-									{aggregationKey}
-								</div>
-								<div>
-								{queryResponse.aggregations[aggregationKey].buckets.map((item,i) => (
-									<div key={item.key} style={{cursor: 'pointer', fontWeight: (this.filter[aggregationKey] === item.key) ? 'bold' : 'normal'}} onClick={(e) => this.filterOnAggregation(aggregationKey, item.key)} >
-										{item.key} ({item.doc_count})
+								<div class="aggregation">
+									<div key={{aggregationKey}} class="header" >
+										{(this.aggregationLabels[aggregationKey] != null ? this.aggregationLabels[aggregationKey] : aggregationKey ) }
 									</div>
-								))}
-								</div>
+									<div class="content">
+									{queryResponse.aggregations[aggregationKey].buckets.map((item,i) => (
+										<div key={item.key} class="item" style={{fontWeight: (this.filter[aggregationKey] === item.key) ? 'bold' : 'normal'}} onClick={(e) => this.filterOnAggregation(aggregationKey, item.key)} >
+											{(aggregationKey === 'geoip.country_code2.keyword')  ? (
+												<span style={{width: "30px"}}>
+													<img src={"/images/flags-mini/" + item.key.toLowerCase() + ".png"} alt={item.key} />&nbsp;
+												</span>
+											) : (<span></span>)}
+											{item.key} (<NumberFormat value={item.doc_count} displayType={'text'} thousandSeparator={true}/>)
+										</div>
+									))}
+									</div>
 								</div>
 							))}
 						</div>
@@ -116,20 +138,38 @@ class App extends Component {
 						<div>No aggregations</div>
 					)}
 				</div>
-				<div style={{float: 'left', width: '70%'}}>
+				<div class="results" >
 					{(this.isNotEmpty (queryResponse.hits) && this.isNotEmpty (queryResponse.hits.hits) ) ? (
-						<div>
-							<div style={{overflow: 'auto', lineHeight: '40px', fontSize: '18px'}}>
-								<div style={{float: 'left', width: '30%'}}>{queryResponse.hits.total} </div>
-								<div style={{float: 'left', width: '30%'}}>{queryResponse.hits.max_score} </div>
-								<div style={{float: 'left', width: '30%'}}>{queryResponse.hits.hits.length} </div>
+						<div class="content">
+							<div style={{overflow: 'auto'}}>
+								<div class="headerBox" style={{width: '70%'}}><div class="content" >
+									&nbsp;
+									<span class="pagerItem actionale" onClick={(e) => this.goToPage(0)}>First</span>
+									<span class="pagerItem actionale" onClick={(e) => this.goToPage((this.page > 0) ? this.page - 1 : 0)}>Previous</span>
+									<span class="pagerItem">{this.page + 1}</span>
+									<span class="pagerItem actionale" onClick={(e) => this.goToPage(this.page + 1)}>Next</span>
+								</div></div>
+								<div class="headerBox" ><div class="content" >Total: <NumberFormat value={queryResponse.hits.total} displayType={'text'} thousandSeparator={true}/> </div></div>
 							</div>
 							<div>
 								{queryResponse.hits.hits.map((item,i) => (
-									<div key={item['_id']} style={{overflow: 'auto'}}>
-										<div style={{float: 'left', width: '30%'}}>{item['_id']} </div>
-										<div style={{float: 'left', width: '30%'}}>{item['_source'].geoip.city_name} </div>
-										<div style={{float: 'left', width: '30%'}}>{item['_source'].userbrowser}</div>
+									<div key={item['_id']} class="result" style={{overflow: 'auto'}}>
+										<div class="metadata">{item['_source'].clientip} </div>
+										<div class="metadata">
+										{(item['_source'].geoip != null && item['_source'].geoip.country_name != null) ? (
+											<div>{item['_source'].geoip.city_name} / 
+											{(item['_source'].geoip.country_code2 != null)  ? (
+												<span>
+													&nbsp;
+													<img src={"/images/flags-mini/" + item['_source'].geoip.country_code2.toLowerCase() + ".png"} alt={item['_source'].geoip.country_code2}/>
+													&nbsp;
+												</span>
+											) : (<span></span>) }
+											{item['_source'].geoip.country_name}
+											</div>
+										) : (<span>?</span>)}
+										</div>
+										<div class="metadata">{item['_source'].userbrowser}</div>
 									</div>
 								))}
 							</div>

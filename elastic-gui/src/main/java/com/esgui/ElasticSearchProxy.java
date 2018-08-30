@@ -39,7 +39,7 @@ public class ElasticSearchProxy {
 	private static final String ELASTIC_SEARCH_PROTOCOL_DEFAULT = "http";
 	
 	private static final String ELASTIC_SEARCH_HOSTNAME = "elasticSearchHostname";
-	private static final String ELASTIC_SEARCH_HOSTNAME_DEFAULT = "192.168.71.133";
+	private static final String ELASTIC_SEARCH_HOSTNAME_DEFAULT = "192.168.71.134";
 	
 	private static final String ELASTIC_SEARCH_PORT = "elasticSearchPort";
 	
